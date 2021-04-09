@@ -1,7 +1,3 @@
-/*
- * FIXME : inserting into the vectors of vectors
-*/
-
 #include <ctype.h>
 #include <string>
 #include <iostream>
@@ -18,29 +14,43 @@ int main(void) {
   const char* temp = line.c_str();
 
   int i = 0;  // how many spaces we have encountered during the parsing phase
-  int j = 0;  // position inside the resources buffer
+  std::vector<int> p;
+  
 
   while (*temp != '\0') {
     if (i == SPACES) {
       // stop counting and refresh
       printf("\n");
       i = 0;
-      ++j;
-      k = 0;
+      std::cout << "adding to resources" << std::endl;
+      resources.push_back(p);
+      p.clear();
     }
 
     if (isspace(*temp)) {
+      std::cout << "got a space" << std::endl;
       ++i;
     } else {
       // reset if we found match
       i = 0;
       if (*temp != delimiter) {
-        printf("[ELEMENT] %c\n", *temp);
-        resources[j][k] = (int)*temp - '0';
+        p.push_back((int)*temp - '0');
       }
     }
 
     temp++;
   }
+  if(resources.size() == 0 && p.size() > 0){
+    resources.push_back(p);
+  }
+
+  for(auto resource : resources) {
+    for(auto element : resource){
+      std::cout << element << ' ';
+    }
+    std::cout << std::endl;
+  }
+
+  std::cout << resources.size() << std::endl;
   return 0;
 }

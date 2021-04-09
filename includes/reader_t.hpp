@@ -15,7 +15,7 @@ class reader_t {
     size_t get_length();
     std::vector<std::string> get_content();
 
-    std::vector<int> process_line(std::string);
+    std::vector<std::vector<int>> process_line(std::string);
     std::vector<std::string> read_contents(banker_t*, std::vector<customer_t>*);
     void print_contents();
 

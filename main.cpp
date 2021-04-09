@@ -1,10 +1,12 @@
-/*#include <iostream>*/
+#include <iostream>
+#include <queue>
 
 #include <stdio.h>
 
 #include "includes/banker_t.hpp"
 #include "includes/customer_t.hpp"
 #include "includes/reader_t.hpp"
+
 
 const char* AUTHOR = "Jared Dyreson";
 const char* INSTITUTION = "California State University Fullerton";
@@ -24,7 +26,23 @@ int main(void){
   banker_t banker = banker_t();
   std::vector<customer_t> customers;
 
+  std::queue<customer_t> process_queue;
+
   reader_t source = reader_t("inputs/bankers_tiny.txt", &customers, &banker);
+  
+  banker.print(customers);
+
+  //for(auto element : customers) {
+    //element.print();
+  //}
+  
+  //while(!customers.empty()) {
+    //auto customer = customers.pop_back();
+    //if(!request_granted){
+      //fprintf(stderr, "Process %d could not be granted\n", customer.get_number());
+      //process_queue.push(customer);
+    //}
+  //}
 
   return 0;
 }
