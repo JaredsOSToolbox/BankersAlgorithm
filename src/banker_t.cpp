@@ -7,6 +7,8 @@
 #include <stdio.h>
 #include <pthread.h>
 
+#define FAKE_NEWS 69
+
 /*
  * outside the scope any class
  * and cannot be used in other parts of the codebase
@@ -86,13 +88,20 @@ bool banker_t::can_grant_request(std::vector<int> container){
   return true;
 }
 
-void banker_t::conduct_simulation(std::vector<customer_t> customers) {
+void banker_t::conduct_simulation(std::vector<customer_t>* customers) {
+  printf("[INFO] Conducting the simulation...\n");
   pthread_attr_t attr;
   pthread_mutexattr_t mutex_attr;
   pthread_attr_init(&attr);
   pthread_mutexattr_init(&mutex_attr);
   pthread_mutex_init(&mutex_, &mutex_attr);
 
+  // Test to see if the elements inside the container are now mutable
+  
+  for(customer_t& customer : *customers) {
+    customer.set_number(FAKE_NEWS);
+    customer.print();
+  }
   // Create Threads
   //for(auto customer : customers) {
     //pthread_create(customer->get_threadid(), &attr, customer->runner, customer);

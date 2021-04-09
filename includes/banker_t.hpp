@@ -15,7 +15,7 @@ class banker_t {
 
     bool can_grant_request(std::vector<int>);
 
-    void conduct_simulation(std::vector<customer_t>);
+    void conduct_simulation(std::vector<customer_t>*);
 
   private:
     std::vector<int> available_funds;

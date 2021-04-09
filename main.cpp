@@ -31,6 +31,8 @@ int main(void){
   reader_t source = reader_t("inputs/bankers_tiny.txt", &customers, &banker);
   
   banker.print(customers);
+  banker.conduct_simulation(&customers);
+  banker.print(customers);
 
   //for(auto element : customers) {
     //element.print();

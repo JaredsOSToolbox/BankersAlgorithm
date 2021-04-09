@@ -20,12 +20,14 @@ class customer_t {
   
     void print();
 
+
+    void set_number(int); // test function to see if we can manipulate this class
   private:
     std::vector<int> initial_allocation;
     std::vector<int> maximum;
     std::vector<int> request;
     int number;
 
-    //pthread_t thread_id;
+    pthread_t thread_id;
 };
 

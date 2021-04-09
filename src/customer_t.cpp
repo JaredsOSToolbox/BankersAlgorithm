@@ -62,5 +62,9 @@ void customer_t::print() {
   std::cout << std::endl;
 }
 
-//pthread_t* customer_t::get_pthread_id(){ return &this->thread_id; }
+pthread_t* customer_t::get_pthread_id(){ return &this->thread_id; }
 
+
+void customer_t::set_number(int number){
+  this->number = number;
+}
