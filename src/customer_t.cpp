@@ -1,4 +1,3 @@
-#include "../includes/args_t.hpp"
 #include "../includes/banker_t.hpp"
 #include "../includes/customer_t.hpp"
 
@@ -40,6 +39,10 @@ int customer_t::get_number() {
   return this->number;
 }
 
+std::vector<int> customer_t::get_request(){
+  return this->request;
+}
+
 bool customer_t::needs_met(){
   return (this->initial_allocation == this->maximum);
 }
@@ -62,7 +65,7 @@ void customer_t::print() {
   std::cout << std::endl;
 }
 
-pthread_t* customer_t::get_pthread_id(){ return &this->thread_id; }
+pthread_t* customer_t::get_pthread_id(){ return &thread_id; }
 
 
 void customer_t::set_number(int number){

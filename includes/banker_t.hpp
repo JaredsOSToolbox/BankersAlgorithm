@@ -10,12 +10,16 @@ class banker_t {
     banker_t();
 
     std::vector<int> get_available_funds();
-    void print(std::vector<customer_t>);
+    std::vector<int> get_initial_request();
+
+    void print(std::vector<customer_t*>);
     void update_avaialble_funds(std::vector<int>);
 
     bool can_grant_request(std::vector<int>);
 
-    void conduct_simulation(std::vector<customer_t>*);
+    void conduct_simulation(std::vector<customer_t*>*);
+    void withdrawl_resources(customer_t*);
+    void deposit(customer_t*);
 
   private:
     std::vector<int> available_funds;

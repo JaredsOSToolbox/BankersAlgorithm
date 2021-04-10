@@ -4,5 +4,6 @@
 struct args_t {
   customer_t* customer;
   banker_t* banker;
+  int value;
 } args_t;
 

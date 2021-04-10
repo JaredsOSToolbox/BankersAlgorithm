@@ -1,49 +1,44 @@
 #include "../includes/banker_t.hpp"
 #include "../includes/customer_t.hpp"
+#include "../includes/args_t.hpp"
 
 #include <iostream>
 #include <string>
 #include <vector>
 #include <stdio.h>
 #include <pthread.h>
-
-#define FAKE_NEWS 69
-
-/*
- * outside the scope any class
- * and cannot be used in other parts of the codebase
-*/
+#include <unistd.h>
 
 pthread_mutex_t mutex_; // not too sure where to put this for linking purposes
 
 void* runner(void* parameters) {
-  struct args_t* arguments = (struct args_t *)parameters;
   // FIXME
-  //banker_t* banker = arguments->banker;
-  //customer_t* customer = arguments->customer;
+  struct args_t* params = (struct args_t *)parameters;
+
+  banker_t* banker = params->banker;
+  customer_t* customer = params->customer;
 
   pthread_mutex_lock(&mutex_);
-// customer->get_threadid()
-  printf("[INFO] Customer thread p#%d has started..", 69);
+  printf("[INFO] Customer thread p#%d has started..\n", customer->get_number());
   pthread_mutex_unlock(&mutex_);
+  
+  while(!customer->needs_met()) {
+    int index = customer->get_number();
+    bool approved = banker->can_grant_request(customer->get_request());
 
-  /*
-   * Some magical algo
-  */
-
-  // The infinite conditional while loop
-  //while(!customer->needs_met()) {
-    
-  //}
-
+    if(approved) {
+      banker->withdrawl_resources(customer);
+      // banker->print();
+    }
+    if(customer->needs_met()){
+      banker->deposit(customer);
+      // banker->print();
+    }
+  }
   pthread_mutex_lock(&mutex_);
-  // customer->get_threadid()
-  printf("[INFO] Customer thread p#%d is shutting down...\n", 69);
+  printf("[INFO] Customer thread p#%d has completed..\n", customer->get_number());
   pthread_mutex_unlock(&mutex_);
-  pthread_exit(EXIT_SUCCESS); 
-
-
-
+  pthread_exit(EXIT_SUCCESS);
 }
 
 banker_t::banker_t(std::vector<int> container) {
@@ -63,15 +58,15 @@ void banker_t::update_avaialble_funds(std::vector<int> container){
   this->available_funds = container;
 }
 
-void banker_t::print(std::vector<customer_t> customers){
+void banker_t::print(std::vector<customer_t*> customers){
   std::cout << "Available: ";
   print_vector(this->available_funds);
   std::cout << std::endl;
 
   printf("ALLOCATED\tMAXIMUM\t\tNEED\n");
   
-  for(customer_t customer : customers) {
-    customer.print();
+  for(auto customer : customers) {
+    customer->print();
   }
 }
 
@@ -80,7 +75,7 @@ bool banker_t::can_grant_request(std::vector<int> container){
     return false;
   }
   for(size_t i = 0; i < container.size(); ++i){
-    if(container[i] >= this->available_funds[i]){
+    if(container[i] > this->available_funds[i]){
       return false;
     }
   }
@@ -88,27 +83,50 @@ bool banker_t::can_grant_request(std::vector<int> container){
   return true;
 }
 
-void banker_t::conduct_simulation(std::vector<customer_t>* customers) {
+void banker_t::withdrawl_resources(customer_t* customer) {
+  std::vector<int> request = customer->get_request();
+
+  for(size_t i = 0; i < available_funds.size(); ++i) {
+    int amount = this->available_funds[i];
+    this->available_funds[i]-=request[i]; // remove from the bank
+    customer->initial_allocation[i]+=amount; // give to the process
+  }
+}
+
+void banker_t::deposit(customer_t* customer) {
+
+  for(size_t i = 0; i < available_funds.size(); ++i) {
+    int amount = customer->initial_allocation[i];
+    customer->initial_allocation[i]-=amount; // take the resources away from the process
+    this->available_funds[i]+=amount; // give them back to the bank
+  }
+}
+
+void banker_t::conduct_simulation(std::vector<customer_t*>* customers) {
   printf("[INFO] Conducting the simulation...\n");
+
+  pthread_t tid[customers->size()];
+
   pthread_attr_t attr;
   pthread_mutexattr_t mutex_attr;
   pthread_attr_init(&attr);
   pthread_mutexattr_init(&mutex_attr);
   pthread_mutex_init(&mutex_, &mutex_attr);
 
-  // Test to see if the elements inside the container are now mutable
-  
-  for(customer_t& customer : *customers) {
-    customer.set_number(FAKE_NEWS);
-    customer.print();
-  }
+  struct args_t* arguments = (struct args_t*)malloc(sizeof(struct args_t));
+  arguments->banker = this; // NOTE : how this is legal is beyond me
+  // NOTE: arguments->banker->print(*customers);
+
   // Create Threads
-  //for(auto customer : customers) {
-    //pthread_create(customer->get_threadid(), &attr, customer->runner, customer);
-  //}
+  int i = 0;
+  for(auto customer : *customers) {
+    arguments->customer = customer;
+    pthread_create(&tid[i++], &attr, runner, arguments);
+  }
 
   // Join Threads
-  //for(auto customer : customers) {
-    //pthread_join(customer->get_threadid(), NULL);
-  //}
+  i = 0;
+  for(auto customer : *customers) {
+    pthread_join(tid[i++], NULL);
+  }
 }

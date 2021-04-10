@@ -10,7 +10,7 @@
 
 #define SPACES 3
 
-reader_t::reader_t(std::string path, std::vector<customer_t>* clientel, banker_t* banker) {
+reader_t::reader_t(std::string path, std::vector<customer_t*>* clientel, banker_t* banker) {
   this->path = path;
   this->content = this->read_contents(banker, clientel);
 }
@@ -67,7 +67,9 @@ std::vector<std::vector<int>> reader_t::process_line(std::string line) {
   return resources;
 }
 
-std::vector<std::string> reader_t::read_contents(banker_t* bank, std::vector<customer_t>* clientel) {
+
+std::vector<std::string> reader_t::read_contents(banker_t* bank, std::vector<customer_t*>* clientel) {
+  // std::vector<customer_t*>* [is a pointer to a vector of customer_t pointers]
   std::vector<std::vector<int>> requests;
 
   std::ifstream file;
@@ -93,7 +95,9 @@ std::vector<std::string> reader_t::read_contents(banker_t* bank, std::vector<cus
       std::cout << "adding customer " << i << "...." << std::endl;
       // 0 : allocated
       // 1 : request
-      clientel->emplace_back(customer_t(processed[0], processed[1], i));
+      customer_t* customer = new customer_t(processed[0], processed[1], i);
+      clientel->push_back(customer);
+      //clientel->emplace_back(&customer_t(processed[0], processed[1], i)); // FIXME : unsure if this will cause memory issues
     }
 
     contents.push_back(line); // save a copy, this was from my compiler codebase
