@@ -9,34 +9,40 @@
 #include <pthread.h>
 #include <unistd.h>
 
-pthread_mutex_t mutex_; // not too sure where to put this for linking purposes
+pthread_mutex_t mutex_;
+banker_t banker_;
 
 void* runner(void* parameters) {
   // FIXME
-  struct args_t* params = (struct args_t *)parameters;
+  //struct args_t* params = (struct args_t *)parameters;
+  customer_t* customer = (customer_t*)parameters;
 
-  banker_t* banker = params->banker;
-  customer_t* customer = params->customer;
+  //banker_t* banker = params->banker;
+  //customer_t* customer = params->customer;
+  //
+  //int i = (int)(long)parameters;
 
   pthread_mutex_lock(&mutex_);
   printf("[INFO] Customer thread p#%d has started..\n", customer->get_number());
+  //printf("[INFO] Customer thread p#%d has started..\n", i);
   pthread_mutex_unlock(&mutex_);
   
-  while(!customer->needs_met()) {
-    int index = customer->get_number();
-    bool approved = banker->can_grant_request(customer->get_request());
 
-    if(approved) {
-      banker->withdrawl_resources(customer);
-      // banker->print();
-    }
-    if(customer->needs_met()){
-      banker->deposit(customer);
-      // banker->print();
-    }
-  }
+  // NOTE : BORKED!
+  //while(!customer->needs_met()) {
+    //int index = customer->get_number();
+    //bool approved = banker->can_grant_request(customer->get_request());
+
+    //if(approved) {
+      //banker->withdrawl_resources(customer);
+    //}
+    //if(customer->needs_met()){
+      //banker->deposit(customer);
+    //}
+  //}
   pthread_mutex_lock(&mutex_);
   printf("[INFO] Customer thread p#%d has completed..\n", customer->get_number());
+  //printf("[INFO] Customer thread p#%d has completed..\n", i);
   pthread_mutex_unlock(&mutex_);
   pthread_exit(EXIT_SUCCESS);
 }
@@ -120,8 +126,12 @@ void banker_t::conduct_simulation(std::vector<customer_t*>* customers) {
   // Create Threads
   int i = 0;
   for(auto customer : *customers) {
-    arguments->customer = customer;
-    pthread_create(&tid[i++], &attr, runner, arguments);
+    //arguments->customer = customer;
+    //pthread_create(&tid[i], &attr, runner, (void*)(long)i++);
+    pthread_create(&tid[i], &attr, runner, (void*)(customer_t*)customer);
+    //pthread_create(&tid[i], &attr, runner, (void*)(struct args_t*)arguments);
+    ++i;
+    //arguments->customer = nullptr;
   }
 
   // Join Threads
