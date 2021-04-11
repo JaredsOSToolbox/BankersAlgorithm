@@ -45,7 +45,7 @@ namespace EVec {
        * Modifiers
       */
 
-      void push_back(T&);
+      void push_back(T);
       void clear();
 
       /*

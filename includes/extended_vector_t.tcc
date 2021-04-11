@@ -71,7 +71,7 @@ namespace EVec {
   */
 
   _U
-  void extended_vector_t<U>::push_back(U& element){
+  void extended_vector_t<U>::push_back(U element){
     data.push_back(element);
   }
 

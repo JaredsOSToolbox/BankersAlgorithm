@@ -10,9 +10,11 @@
 
 #define SPACES 3
 
-reader_t::reader_t(std::string path, std::vector<customer_t*>* clientel, banker_t* banker) {
+//reader_t::reader_t(std::string path, std::vector<customer_t*>* clientel, banker_t* banker) {
+reader_t::reader_t(std::string path) {
   this->path = path;
-  this->content = this->read_contents(banker, clientel);
+  //this->content = this->read_contents(banker, clientel);
+  this->content = this->read_contents();
 }
 
 reader_t::reader_t() {
@@ -26,7 +28,8 @@ std::vector<std::string> reader_t::get_content() { return this->content; }
 
 size_t reader_t::get_length() { return this->content.size(); }
 
-std::vector<std::vector<int>> reader_t::process_line(std::string line) {
+//std::vector<std::vector<int>> reader_t::process_line(std::string line) {
+std::vector<EVec::extended_vector_t<int>> reader_t::process_line(std::string line) {
   /*
    * FIXME : allocated and requested have not been properly parsed yet
    * Please fix this because I am now really tired and I want to go to bed right now
@@ -35,11 +38,13 @@ std::vector<std::vector<int>> reader_t::process_line(std::string line) {
   */
   const char delimiter = ',';
 
-  std::vector<std::vector<int>> resources;
+  std::vector<EVec::extended_vector_t<int>> resources;
+  //std::vector<std::vector<int>> resources;
 
   const char* temp = line.c_str();
   int i = 0;  // how many spaces we have encountered during the parsing phase
-  std::vector<int> p;
+  //std::vector<int> p;
+  EVec::extended_vector_t<int> p;
 
   while (*temp != '\0') {
     if (i == SPACES) {
@@ -68,9 +73,11 @@ std::vector<std::vector<int>> reader_t::process_line(std::string line) {
 }
 
 
-std::vector<std::string> reader_t::read_contents(banker_t* bank, std::vector<customer_t*>* clientel) {
+//std::vector<std::string> reader_t::read_contents(banker_t* bank, std::vector<customer_t*>* clientel) {
+std::vector<std::string> reader_t::read_contents() {
   // std::vector<customer_t*>* [is a pointer to a vector of customer_t pointers]
-  std::vector<std::vector<int>> requests;
+  //std::vector<std::vector<int>> requests;
+  std::vector<EVec::extended_vector_t<int>> requests;
 
   std::ifstream file;
   file.open(this->path);
@@ -90,13 +97,15 @@ std::vector<std::string> reader_t::read_contents(banker_t* bank, std::vector<cus
     auto processed = process_line(line);
 
     if(i == -1){
-      bank->update_avaialble_funds(processed[0]);
+      // UPDATE FUNDS
+      //bank->update_avaialble_funds(processed[0]);
     } else {
       std::cout << "adding customer " << i << "...." << std::endl;
       // 0 : allocated
       // 1 : request
-      customer_t* customer = new customer_t(processed[0], processed[1], i);
-      clientel->push_back(customer);
+      // CREATE CUSTOMER
+      //customer_t* customer = new customer_t(processed[0], processed[1], i);
+      //clientel->push_back(customer);
       //clientel->emplace_back(&customer_t(processed[0], processed[1], i)); // FIXME : unsure if this will cause memory issues
     }
 

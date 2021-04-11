@@ -25,14 +25,13 @@ void version(void) {
 
 
 int main(void){
-  EVec::extended_vector_t<int> a({1, 1, 1});
-  EVec::extended_vector_t<int> b({1, 2, 1});
 
   //banker_t banker = banker_t();
   //std::vector<customer_t*> customers;
 
   //std::queue<customer_t*> process_queue;
 
+  reader_t source = reader_t("inputs/bankers_tiny.txt");
   //reader_t source = reader_t("inputs/bankers_tiny.txt", &customers, &banker);
   
   //banker.print(customers);
