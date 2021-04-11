@@ -11,10 +11,10 @@
 #define SPACES 3
 
 //reader_t::reader_t(std::string path, std::vector<customer_t*>* clientel, banker_t* banker) {
-reader_t::reader_t(std::string path) {
+reader_t::reader_t(std::string path, std::vector<customer_t*>* clientel) {
   this->path = path;
   //this->content = this->read_contents(banker, clientel);
-  this->content = this->read_contents();
+  this->content = this->read_contents(clientel);
 }
 
 reader_t::reader_t() {
@@ -74,7 +74,7 @@ std::vector<EVec::extended_vector_t<int>> reader_t::process_line(std::string lin
 
 
 //std::vector<std::string> reader_t::read_contents(banker_t* bank, std::vector<customer_t*>* clientel) {
-std::vector<std::string> reader_t::read_contents() {
+std::vector<std::string> reader_t::read_contents(std::vector<customer_t*>* clientel) {
   // std::vector<customer_t*>* [is a pointer to a vector of customer_t pointers]
   //std::vector<std::vector<int>> requests;
   std::vector<EVec::extended_vector_t<int>> requests;
@@ -104,8 +104,8 @@ std::vector<std::string> reader_t::read_contents() {
       // 0 : allocated
       // 1 : request
       // CREATE CUSTOMER
-      //customer_t* customer = new customer_t(processed[0], processed[1], i);
-      //clientel->push_back(customer);
+      customer_t* customer = new customer_t(processed[0], processed[1], i);
+      clientel->push_back(customer);
       //clientel->emplace_back(&customer_t(processed[0], processed[1], i)); // FIXME : unsure if this will cause memory issues
     }
 

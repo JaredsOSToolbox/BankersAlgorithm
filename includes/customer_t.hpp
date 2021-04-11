@@ -6,7 +6,7 @@
 #include <pthread.h>
 
 // NOTE : cheesing this std::ostream hard
-// void print_vector(std::vector<int>);
+void print_vector(std::vector<int>);
 
 class customer_t {
   public:

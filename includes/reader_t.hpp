@@ -9,7 +9,7 @@
 
 class reader_t {
   public:
-    reader_t(std::string);
+    reader_t(std::string, std::vector<customer_t*>*);
     //reader_t(std::string, std::vector<customer_t*>*, banker_t*);
     reader_t();
 
@@ -21,7 +21,7 @@ class reader_t {
     //std::vector<std::vector<int>> process_line(std::string);
     std::vector<EVec::extended_vector_t<int>> process_line(std::string);
     //std::vector<std::string> read_contents(banker_t*, std::vector<customer_t*>*);
-    std::vector<std::string> read_contents();
+    std::vector<std::string> read_contents(std::vector<customer_t*>*);
     void print_contents();
 
   private:
