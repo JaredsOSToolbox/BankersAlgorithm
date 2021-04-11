@@ -3,6 +3,8 @@
 
 #include <stdio.h>
 
+#include "includes/extended_vector_t.hpp"
+
 #include "includes/banker_t.hpp"
 #include "includes/customer_t.hpp"
 #include "includes/reader_t.hpp"
@@ -21,17 +23,19 @@ void version(void) {
       INSTITUTION, AUTHOR);
 }
 
+
 int main(void){
+  EVec::extended_vector_t<int> e;
 
-  banker_t banker = banker_t();
-  std::vector<customer_t*> customers;
+  //banker_t banker = banker_t();
+  //std::vector<customer_t*> customers;
 
-  std::queue<customer_t*> process_queue;
+  //std::queue<customer_t*> process_queue;
 
-  reader_t source = reader_t("inputs/bankers_tiny.txt", &customers, &banker);
+  //reader_t source = reader_t("inputs/bankers_tiny.txt", &customers, &banker);
   
-  banker.print(customers);
-  banker.conduct_simulation(&customers);
+  //banker.print(customers);
+  //banker.conduct_simulation(&customers);
 
   //banker.print(customers);
 

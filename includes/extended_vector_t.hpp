@@ -12,75 +12,83 @@
 #include <iostream>
 #include <iomanip>
 
-template <typename T>
+// So I don't have to write this all out by hand
 
-class extended_vector_t {
-  public:
+#define _T template <typename T>
 
-    /*
-     * Constructors
-    */
+namespace EVec {
+  _T
 
-    extended_vector_t();
-    extended_vector_t(size_t, const T&);
+  class extended_vector_t {
+    public:
 
-    extended_vector_t(const std::vector<T>&);
-    extended_vector_t(const std::string&, const std::initializer_list<T>&);
+      /*
+       * Constructors
+      */
 
-    extended_vector_t(const std::initializer_list<T>&);
+      extended_vector_t();
+      extended_vector_t(size_t, const T&);
 
-    /*
-     * Capacity functions
-    */
+      extended_vector_t(const std::vector<T>&);
+      extended_vector_t(const std::string&, const std::initializer_list<T>&);
 
-    bool empty() const;
-    size_t size() const;
+      extended_vector_t(const std::initializer_list<T>&);
 
-    /*
-     * Modifiers
-    */
+      /*
+       * Capacity functions
+      */
 
-    void push_back(T&);
-    void clear();
+      bool empty() const;
+      size_t size() const;
 
-    /*
-     * Operators
-    */
+      /*
+       * Modifiers
+      */
 
-    T operator[](size_t) const;
-    T& operator[](size_t);
+      void push_back(T&);
+      void clear();
 
-    extended_vector_t& operator+=(const extended_vector_t<T>&);
-    extended_vector_t& operator-=(const extended_vector_t<T>&);
+      /*
+       * Operators
+      */
 
-    extended_vector_t operator-(const extended_vector_t<T>&) const;
-    extended_vector_t operator+(const extended_vector_t<T>&) const;
+      T operator[](size_t) const;
+      T& operator[](size_t);
 
-    extended_vector_t operator*(const T&) const;
+      extended_vector_t& operator+=(const extended_vector_t<T>&);
+      extended_vector_t& operator-=(const extended_vector_t<T>&);
 
-    friend extended_vector_t operator*(const T&, const extended_vector_t<T>&);
+      extended_vector_t operator-(const extended_vector_t<T>&) const;
+      extended_vector_t operator+(const extended_vector_t<T>&) const;
 
-    bool operator<(const extended_vector_t<T>&) const;
-    bool operator<=(const extended_vector_t<T>&) const;
+      extended_vector_t operator*(const T&) const;
 
-    bool operator>(const extended_vector_t<T>&) const;
-    bool operator>=(const extended_vector_t<T>&) const;
+      friend extended_vector_t operator*(const T&, const extended_vector_t<T>&);
 
-    bool operator==(const extended_vector_t<T>&) const;
-    bool operator!=(const extended_vector_t<T>&);
+      bool operator<(const extended_vector_t<T>&) const;
+      bool operator<=(const extended_vector_t<T>&) const;
 
-    friend std::ostream& operator<<(std::ostream&, const extended_vector_t&);
+      bool operator>(const extended_vector_t<T>&) const;
+      bool operator>=(const extended_vector_t<T>&) const;
 
-    /*
-     * Iterators
-    */
+      bool operator==(const extended_vector_t<T>&) const;
+      bool operator!=(const extended_vector_t<T>&);
 
-    typename std::vector<T>::const_iterator begin() const;
-    typename std::vector<T>::const_iterator end()   const;
+      friend std::ostream& operator<<(std::ostream&, const extended_vector_t&);
+
+      /*
+       * Iterators
+      */
+
+      typename std::vector<T>::const_iterator begin() const;
+      typename std::vector<T>::const_iterator end()   const;
 
 
 
 
-  private:
-    std::vector<T> data;
-};
+    private:
+      std::vector<T> data;
+  };
+}
+
+#include "src/extended_vector_t.cpp"

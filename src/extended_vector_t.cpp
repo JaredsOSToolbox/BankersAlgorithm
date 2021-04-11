@@ -1,212 +1,213 @@
-#include "../includes/extended_vector_t.hpp"
+//#include "../includes/extended_vector_t.hpp"
 
 #include <vector>
 #include <string>
 #include <iostream>
 
-// So I don't have to write this all out by hand
-
-#define _T template <typename T>
 
 /*
  * BEGIN CONSTRUCTORS
 */
 
-_T
+#define _U template <typename U>
 
-extended_vector_t<T>::extended_vector_t() : data(std::vector<T>()) {}
+namespace EVec {
+  _U
 
-_T
+  extended_vector_t<U>::extended_vector_t() : data(std::vector<U>()) {}
 
-extended_vector_t<T>::extended_vector_t(size_t size, const T& k){
-  for(size_t i = 0; i < size; ++i){
-    data.push_back(k);
+  _U
+
+  extended_vector_t<U>::extended_vector_t(size_t size, const U& k){
+    for(size_t i = 0; i < size; ++i){
+      data.push_back(k);
+    }
   }
-}
 
-_T
+  _U
 
-extended_vector_t<T>::extended_vector_t(const std::vector<T>& container) : data(container) {}
+  extended_vector_t<U>::extended_vector_t(const std::vector<U>& container) : data(container) {}
 
-_T
+  _U
 
-extended_vector_t<T>::extended_vector_t(const std::string& str, const std::initializer_list<T>& _list) : extended_vector_t() {
-  for(const T& element : _list) {
+  extended_vector_t<U>::extended_vector_t(const std::string& str, const std::initializer_list<U>& _list) : extended_vector_t() {
+    for(const U& element : _list) {
+      data.push_back(element);
+    }
+  }
+
+  _U
+  extended_vector_t<U>::extended_vector_t(const std::initializer_list<U>& _list) : extended_vector_t<U>() {
+    for(const U& element : _list) {
+      data.push_back(element);
+    }
+  }
+
+  /*
+   * END CONSTRUCTORS
+  */
+
+
+  /*
+   * BEGIN CAPACITY FUNCTIONS
+  */
+
+  _U
+
+  bool extended_vector_t<U>::empty() const {
+    return data.empty();
+  }
+
+  _U
+
+  size_t extended_vector_t<U>::size() const {
+    return data.size();
+  }
+
+  /*
+   * END CAPACITY FUNCTIONS
+  */
+
+  /*
+   * BEGIN MODIFIER FUNCTIONS
+  */
+
+  _U
+  void extended_vector_t<U>::push_back(U& element){
     data.push_back(element);
   }
-}
 
-_T
-extended_vector_t<T>::extended_vector_t(const std::initializer_list<T>& _list) : extended_vector_t<T>() {
-  for(const T& element : _list) {
-    data.push_back(element);
+  _U
+  void extended_vector_t<U>::clear(){
+    data.clear();
   }
-}
 
-/*
- * END CONSTRUCTORS
-*/
+  /*
+   * END MODIFIER FUNCTIONS
+  */
 
+  /*
+   * BEGIN OPERATOR FUNCTIONS
+  */
 
-/*
- * BEGIN CAPACITY FUNCTIONS
-*/
+  _U
 
-_T
-
-bool extended_vector_t<T>::empty() const {
-  return data.empty();
-}
-
-_T
-
-size_t extended_vector_t<T>::size() const {
-  return data.size();
-}
-
-/*
- * END CAPACITY FUNCTIONS
-*/
-
-/*
- * BEGIN MODIFIER FUNCTIONS
-*/
-
-_T
-void extended_vector_t<T>::push_back(T& element){
-  data.push_back(element);
-}
-
-_T
-void extended_vector_t<T>::clear(){
-  data.clear();
-}
-
-/*
- * END MODIFIER FUNCTIONS
-*/
-
-/*
- * BEGIN OPERATOR FUNCTIONS
-*/
-
-_T
-
-T extended_vector_t<T>::operator[](size_t i) const {
-  return data[i];
-}
-
-_T
-
-T& extended_vector_t<T>::operator[](size_t i) {
-  return data[i];
-}
-
-_T
-
-typename std::vector<T>::const_iterator extended_vector_t<T>::begin() const { 
-  return data.begin(); 
-}
-
-_T
-
-typename std::vector<T>::const_iterator extended_vector_t<T>::end() const { 
-  return data.end(); 
-}
-
-_T
-
-extended_vector_t<T>& extended_vector_t<T>::operator+=(const extended_vector_t<T>& other){
-  for(size_t i = 0; i < other.data.size(); ++i) {
-    data[i] += other.data[i];
+  U extended_vector_t<U>::operator[](size_t i) const {
+    return data[i];
   }
-  return *this;
-}
 
-_T
-extended_vector_t<T>& extended_vector_t<T>::operator-=(const extended_vector_t<T>& other){
-  for(size_t i = 0; i < other.data.size(); ++i) {
-    data[i] -= other.data[i];
+  _U
+
+  U& extended_vector_t<U>::operator[](size_t i) {
+    return data[i];
   }
-  return *this;
-}
 
-_T
+  _U
 
-extended_vector_t<T> extended_vector_t<T>::operator+(const extended_vector_t<T>& other) const {
-  extended_vector_t<T> temp(data);
-  temp += other;
-  return temp;
-}
-
-_T
-extended_vector_t<T> extended_vector_t<T>::operator-(const extended_vector_t<T>& other) const {
-  extended_vector_t<T> temp(data);
-  temp -= other;
-  return temp;
-}
-
-_T
-extended_vector_t<T> extended_vector_t<T>::operator*(const T& k) const {
-  extended_vector_t<T> temp(data);
-
-  for(size_t i = 0; i < data.size(); ++i) {
-    temp.data[i] *= k;
+  typename std::vector<U>::const_iterator extended_vector_t<U>::begin() const { 
+    return data.begin(); 
   }
-  return temp;
-}
 
-// FIXME : FRIENDS
+  _U
 
-//extended_vector_t<T> extended_vector_t<T>::operator*(const T& k, const extended_vector_t<T>& other) {
-  //extended_vector_t<T> temp(other.data);
+  typename std::vector<U>::const_iterator extended_vector_t<U>::end() const { 
+    return data.end(); 
+  }
 
-  //for(size_t i = 0; i < temp.size(); ++i) {
-    //temp.data[i] *= k;
+  _U
+
+  extended_vector_t<U>& extended_vector_t<U>::operator+=(const extended_vector_t<U>& other){
+    for(size_t i = 0; i < other.data.size(); ++i) {
+      data[i] += other.data[i];
+    }
+    return *this;
+  }
+
+  _U
+  extended_vector_t<U>& extended_vector_t<U>::operator-=(const extended_vector_t<U>& other){
+    for(size_t i = 0; i < other.data.size(); ++i) {
+      data[i] -= other.data[i];
+    }
+    return *this;
+  }
+
+  _U
+
+  extended_vector_t<U> extended_vector_t<U>::operator+(const extended_vector_t<U>& other) const {
+    extended_vector_t<U> temp(data);
+    temp += other;
+    return temp;
+  }
+
+  _U
+  extended_vector_t<U> extended_vector_t<U>::operator-(const extended_vector_t<U>& other) const {
+    extended_vector_t<U> temp(data);
+    temp -= other;
+    return temp;
+  }
+
+  _U
+  extended_vector_t<U> extended_vector_t<U>::operator*(const U& k) const {
+    extended_vector_t<U> temp(data);
+
+    for(size_t i = 0; i < data.size(); ++i) {
+      temp.data[i] *= k;
+    }
+    return temp;
+  }
+
+  // FIXME : FRIENDS
+
+  //extended_vector_t<U> extended_vector_t<U>::operator*(const U& k, const extended_vector_t<U>& other) {
+    //extended_vector_t<U> temp(other.data);
+
+    //for(size_t i = 0; i < temp.size(); ++i) {
+      //temp.data[i] *= k;
+    //}
+    //return temp;
   //}
-  //return temp;
-//}
 
-_T
-bool extended_vector_t<T>::operator<(const extended_vector_t<T>& other) const {
-  return data < other.data;
-}
-
-_T
-bool extended_vector_t<T>::operator<=(const extended_vector_t<T>& other) const {
-  return data <= other.data;
-}
-
-_T
-bool extended_vector_t<T>::operator>(const extended_vector_t<T>& other) const {
-  return data > other.data;
-}
-
-_T
-bool extended_vector_t<T>::operator>=(const extended_vector_t<T>& other) const {
-  return data >= other.data;
-}
-
-_T
-bool extended_vector_t<T>::operator==(const extended_vector_t<T>& other) const {
-  return data == other.data;
-}
-
-_T
-bool extended_vector_t<T>::operator!=(const extended_vector_t<T>& other) {
-  return !operator==(other);
-}
-
-_T
-std::ostream& operator<<(std::ostream& os, const extended_vector_t<T>& vect) {
-  if (vect.empty()) { return os << "[WARNING] extended_vector_t is empty\n"; }
-  size_t i = 0;
-  for (const T& element : vect.data) {
-    os << std::setw(2) << element;
-    if (i++ < vect.data.size() - 1) { os << " "; }
+  _U
+  bool extended_vector_t<U>::operator<(const extended_vector_t<U>& other) const {
+    return data < other.data;
   }
-  return os;
+
+  _U
+  bool extended_vector_t<U>::operator<=(const extended_vector_t<U>& other) const {
+    return data <= other.data;
+  }
+
+  _U
+  bool extended_vector_t<U>::operator>(const extended_vector_t<U>& other) const {
+    return data > other.data;
+  }
+
+  _U
+  bool extended_vector_t<U>::operator>=(const extended_vector_t<U>& other) const {
+    return data >= other.data;
+  }
+
+  _U
+  bool extended_vector_t<U>::operator==(const extended_vector_t<U>& other) const {
+    return data == other.data;
+  }
+
+  _U
+  bool extended_vector_t<U>::operator!=(const extended_vector_t<U>& other) {
+    return !operator==(other);
+  }
+
+  _U
+  std::ostream& operator<<(std::ostream& os, const extended_vector_t<U>& vect) {
+    if (vect.empty()) { return os << "[WARNING] extended_vector_t is empty\n"; }
+    size_t i = 0;
+    for (const U& element : vect.data) {
+      os << std::setw(2) << element;
+      if (i++ < vect.data.size() - 1) { os << " "; }
+    }
+    return os;
+  }
+  /*
+   * END OPERATOR FUNCTIONS
+  */
 }
-/*
- * END OPERATOR FUNCTIONS
-*/
