@@ -47,6 +47,10 @@ EVec::extended_vector_t<int> customer_t::get_request(){
   return this->request;
 }
 
+EVec::extended_vector_t<int> customer_t::get_init(){
+  return this->initial_allocation;
+}
+
 bool customer_t::needs_met(){
   return (this->initial_allocation == this->maximum);
 }
@@ -87,4 +91,14 @@ pthread_t* customer_t::get_pthread_id(){ return &thread_id; }
 
 void customer_t::set_number(int number){
   this->number = number;
+}
+
+std::ostream& operator<<(std::ostream& os, const customer_t& customer) {
+  print_vector(customer.initial_allocation.get_data());
+  os << "\t\t";
+  print_vector(customer.maximum.get_data());
+  os << "\t\t";
+  print_vector(customer.request.get_data()); // need
+  os << std::endl;
+  return os;
 }

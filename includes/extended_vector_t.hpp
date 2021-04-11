@@ -83,7 +83,7 @@ namespace EVec {
       typename std::vector<T>::const_iterator begin() const;
       typename std::vector<T>::const_iterator end()   const;
 
-      std::vector<T> get_data();
+      std::vector<T> get_data() const;
 
 
 

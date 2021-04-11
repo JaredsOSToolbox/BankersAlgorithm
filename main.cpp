@@ -2,6 +2,7 @@
 #include <queue>
 
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "includes/extended_vector_t.hpp"
 
@@ -23,18 +24,27 @@ void version(void) {
       INSTITUTION, AUTHOR);
 }
 
+void usage(void) {
+  std::cout << "usage: bankruptcy <input>" << std::endl;
+}
 
-int main(void){
+
+int main(int argc, const char* argv[]){
+
+  //if(argc < 2){
+    //usage();
+    //return EXIT_FAILURE;
+  //}
 
   banker_t banker = banker_t();
 
-  //std::queue<customer_t*> process_queue;
-
   reader_t source = reader_t("inputs/bankers_tiny.txt", &banker);
+  //reader_t source = reader_t(std::string(argv[1]), &banker);
   
   //reader_t source = reader_t("inputs/bankers_tiny.txt", &customers, &banker);
   
   //banker.print(customers);
+  std::cout << banker << std::endl; 
   banker.conduct_simulation();
 
   //banker.print(customers);

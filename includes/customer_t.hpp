@@ -20,6 +20,7 @@ class customer_t {
     EVec::extended_vector_t<int> get_maximum();
 
     EVec::extended_vector_t<int> get_request();
+    EVec::extended_vector_t<int> get_init();
     //std::vector<int> get_request();
     bool needs_met();
 
@@ -32,6 +33,8 @@ class customer_t {
 
 
     void set_number(int); // test function to see if we can manipulate this class
+
+    friend std::ostream& operator<<(std::ostream&, const customer_t&);
 
   private:
     //std::vector<int> initial_allocation; // FIXME: we are making it public so we can edit the values like a structure
