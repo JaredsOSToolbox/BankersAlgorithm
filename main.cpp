@@ -25,7 +25,8 @@ void version(void) {
 
 
 int main(void){
-  EVec::extended_vector_t<int> e;
+  EVec::extended_vector_t<int> a({1, 1, 1});
+  EVec::extended_vector_t<int> b({1, 2, 1});
 
   //banker_t banker = banker_t();
   //std::vector<customer_t*> customers;

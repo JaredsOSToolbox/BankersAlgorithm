@@ -1,5 +1,3 @@
-//#include "../includes/extended_vector_t.hpp"
-
 #include <vector>
 #include <string>
 #include <iostream>
@@ -198,6 +196,7 @@ namespace EVec {
   }
 
   _U
+
   std::ostream& operator<<(std::ostream& os, const extended_vector_t<U>& vect) {
     if (vect.empty()) { return os << "[WARNING] extended_vector_t is empty\n"; }
     size_t i = 0;

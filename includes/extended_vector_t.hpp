@@ -91,4 +91,4 @@ namespace EVec {
   };
 }
 
-#include "src/extended_vector_t.cpp"
+#include "extended_vector_t.tcc"
