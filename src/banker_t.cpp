@@ -1,6 +1,6 @@
 #include "../includes/banker_t.hpp"
 #include "../includes/customer_t.hpp"
-#include "../includes/args_t.hpp"
+#include "../includes/extended_vector_t.hpp"
 
 #include <iostream>
 #include <string>
@@ -22,19 +22,20 @@ void* runner(void* parameters) {
   pthread_mutex_unlock(&mutex_);
   
   // NOTE : BORKED!
-  //while(!customer->needs_met()) {
-    //int index = customer->get_number();
-    //bool approved = banker_.can_grant_request(customer->get_request());
+  while(!customer->needs_met()) {
+    int index = customer->get_number();
+    bool approved = banker_.can_grant_request(customer->get_request());
 
-    //if(approved) {
-      //printf("[APPROVED] Granting process %d the resources\n", index);
-      //banker_.withdrawl_resources(customer);
+    if(approved) {
+      printf("[APPROVED] Granting process %d the resources\n", index);
+      banker_.withdrawl_resources(customer);
       //print_vector(banker_.get_available_funds());
-    //}
-    //if(customer->needs_met()){
-      //banker_.deposit(customer);
-    //}
-  //}
+    }
+    if(customer->needs_met()){
+      printf("[RECIEVED] Process %d has given its resources back\n", index);
+      banker_.deposit(customer);
+    }
+  }
   
   pthread_mutex_lock(&mutex_);
   printf("[INFO] Customer thread p#%d has completed..\n", customer->get_number());
@@ -42,26 +43,30 @@ void* runner(void* parameters) {
   pthread_exit(EXIT_SUCCESS);
 }
 
-banker_t::banker_t(std::vector<int> container) {
+banker_t::banker_t(EVec::extended_vector_t<int> container) {
   this->available_funds = container;
 }
 
 banker_t::banker_t(){
-  this->available_funds = std::vector<int>();
+  this->available_funds = EVec::extended_vector_t<int>();
 }
 
-std::vector<int> banker_t::get_available_funds(){
+EVec::extended_vector_t<int> banker_t::get_available_funds(){
   return this->available_funds;
 }
 
 // FIXME : same as constructor
-void banker_t::update_avaialble_funds(std::vector<int> container){
+void banker_t::update_avaialble_funds(EVec::extended_vector_t<int> container) {
   this->available_funds = container;
 }
 
 void banker_t::print(std::vector<customer_t*> customers){
+  // FIXME
+  // use std::ostream
+  //return;
+
   std::cout << "Available: ";
-  print_vector(this->available_funds);
+  print_vector(this->available_funds.get_data());
   std::cout << std::endl;
 
   printf("ALLOCATED\tMAXIMUM\t\tNEED\n");
@@ -71,37 +76,29 @@ void banker_t::print(std::vector<customer_t*> customers){
   }
 }
 
-bool banker_t::can_grant_request(std::vector<int> container){
-  if(container.size() != this->available_funds.size()){
-    return false;
-  }
-  for(size_t i = 0; i < container.size(); ++i){
-    if(container[i] > this->available_funds[i]){
-      return false;
-    }
-  }
-  // TODO | incomplete
-  return true;
+bool banker_t::can_grant_request(EVec::extended_vector_t<int> request){
+  // FIXME | incomplete
+  return this->available_funds > request;
 }
 
 void banker_t::withdrawl_resources(customer_t* customer) {
-  std::vector<int> request = customer->get_request();
+  // TODO : give resources to customer
 
-  for(size_t i = 0; i < available_funds.size(); ++i) {
-    int amount = this->available_funds[i];
-    this->available_funds[i]-=request[i]; // remove from the bank
-    customer->initial_allocation[i]+=amount; // give to the process
-    customer->request[i]-=amount; // remove the resources it needs
-  }
+  this->available_funds-=customer->get_request();
+  customer->obtain_resources();
 }
 
 void banker_t::deposit(customer_t* customer) {
 
-  for(size_t i = 0; i < available_funds.size(); ++i) {
-    int amount = customer->initial_allocation[i];
-    customer->initial_allocation[i]-=amount; // take the resources away from the process
-    this->available_funds[i]+=amount; // give them back to the bank
-  }
+  // TODO : take all resources from customer
+  this->available_funds+=customer->get_maximum();
+  customer->drop_resources();
+
+  //for(size_t i = 0; i < available_funds.size(); ++i) {
+    //int amount = customer->initial_allocation[i];
+    //customer->initial_allocation[i]-=amount; // take the resources away from the process
+    //this->available_funds[i]+=amount; // give them back to the bank
+  //}
 }
 
 void banker_t::conduct_simulation(std::vector<customer_t*>* customers) {

@@ -27,6 +27,9 @@ class customer_t {
   
     void print();
 
+    void drop_resources(); // deposit funds
+    void obtain_resources(); // get funds from bank
+
 
     void set_number(int); // test function to see if we can manipulate this class
 

@@ -63,13 +63,23 @@ EVec::extended_vector_t<int> customer_t::get_maximum(){
 
 void customer_t::print() {
   // FIXME
-  return;
-  //print_vector(this->initial_allocation);
-  //std::cout << "\t\t";
-  //print_vector(this->maximum);
-  //std::cout << "\t\t";
-  //print_vector(this->request); // need
-  //std::cout << std::endl;
+  //return;
+  print_vector(this->initial_allocation.get_data());
+  std::cout << "\t\t";
+  print_vector(this->maximum.get_data());
+  std::cout << "\t\t";
+  print_vector(this->request.get_data()); // need
+  std::cout << std::endl;
+}
+
+void customer_t::drop_resources(){
+  this->initial_allocation.clear();
+  this->maximum.clear();
+  this->request.clear();
+}
+
+void customer_t::obtain_resources() {
+  this->initial_allocation = this->maximum;
 }
 
 pthread_t* customer_t::get_pthread_id(){ return &thread_id; }

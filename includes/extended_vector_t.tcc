@@ -209,4 +209,8 @@ namespace EVec {
   /*
    * END OPERATOR FUNCTIONS
   */
+
+  _U
+
+  std::vector<U> extended_vector_t<U>::get_data(){ return this->data; }
 }
