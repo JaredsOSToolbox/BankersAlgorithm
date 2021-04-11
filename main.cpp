@@ -27,16 +27,15 @@ void version(void) {
 int main(void){
 
   banker_t banker = banker_t();
-  std::vector<customer_t*> customers;
 
   //std::queue<customer_t*> process_queue;
 
-  reader_t source = reader_t("inputs/bankers_tiny.txt", &customers, &banker);
+  reader_t source = reader_t("inputs/bankers_tiny.txt", &banker);
   
   //reader_t source = reader_t("inputs/bankers_tiny.txt", &customers, &banker);
   
-  banker.print(customers);
-  banker.conduct_simulation(&customers);
+  //banker.print(customers);
+  banker.conduct_simulation();
 
   //banker.print(customers);
 

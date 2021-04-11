@@ -29,7 +29,11 @@ void* runner(void* parameters) {
     if(approved) {
       printf("[APPROVED] Granting process %d the resources\n", index);
       banker_.withdrawl_resources(customer);
+      banker_.print();
+      std::cout << std::endl;
       //print_vector(banker_.get_available_funds());
+    } else {
+      printf("[DENIED] Will not grant process %d desired resources\n", index);
     }
     if(customer->needs_met()){
       printf("[RECIEVED] Process %d has given its resources back\n", index);
@@ -43,12 +47,14 @@ void* runner(void* parameters) {
   pthread_exit(EXIT_SUCCESS);
 }
 
-banker_t::banker_t(EVec::extended_vector_t<int> container) {
+banker_t::banker_t(EVec::extended_vector_t<int> container, std::vector<customer_t*> customers) {
   this->available_funds = container;
+  this->customers = customers;
 }
 
 banker_t::banker_t(){
   this->available_funds = EVec::extended_vector_t<int>();
+  //this->customers = &std::vector<customer_t*>();
 }
 
 EVec::extended_vector_t<int> banker_t::get_available_funds(){
@@ -60,7 +66,7 @@ void banker_t::update_avaialble_funds(EVec::extended_vector_t<int> container) {
   this->available_funds = container;
 }
 
-void banker_t::print(std::vector<customer_t*> customers){
+void banker_t::print(){
   // FIXME
   // use std::ostream
   //return;
@@ -71,7 +77,7 @@ void banker_t::print(std::vector<customer_t*> customers){
 
   printf("ALLOCATED\tMAXIMUM\t\tNEED\n");
   
-  for(auto customer : customers) {
+  for(auto customer : this->customers) {
     customer->print();
   }
 }
@@ -101,10 +107,10 @@ void banker_t::deposit(customer_t* customer) {
   //}
 }
 
-void banker_t::conduct_simulation(std::vector<customer_t*>* customers) {
+void banker_t::conduct_simulation() {
   printf("[INFO] Conducting the simulation...\n");
 
-  pthread_t tid[customers->size()];
+  pthread_t tid[customers.size()];
 
   pthread_attr_t attr;
   pthread_mutexattr_t mutex_attr;
@@ -116,13 +122,17 @@ void banker_t::conduct_simulation(std::vector<customer_t*>* customers) {
 
   // Create Threads
   int i = 0;
-  for(auto customer : *customers) {
+  for(auto customer : this->customers) {
     pthread_create(&tid[i++], &attr, runner, (void*)(customer_t*)customer);
   }
 
   // Join Threads
   i = 0;
-  for(auto customer : *customers) {
+  for(auto customer : this->customers) {
     pthread_join(tid[i++], NULL);
   }
+}
+
+void banker_t::add_customers(std::vector<customer_t*> container) {
+  this->customers = container;
 }
