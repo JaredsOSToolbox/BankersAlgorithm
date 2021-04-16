@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <pthread.h>
+#include <tuple>
 
 #include "../includes/customer_t.hpp"
 #include "../includes/extended_vector_t.hpp"
@@ -28,8 +29,10 @@ class banker_t {
     friend std::ostream& operator<<(std::ostream&, const banker_t&);
 
   private:
-    //std::vector<int> available_funds;
     EVec::extended_vector_t<int> available_funds;
+    EVec::extended_vector_t<int> total_allocated;
+    
     std::vector<customer_t*> customers;
+    std::vector<bool> finished;
 };
 

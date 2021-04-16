@@ -12,42 +12,80 @@
 
 #define DEADLOCK 100
 
+// Preprocessor derectives are neat-o!
+
+#define MUTEX_SAFE(x) pthread_mutex_lock(&mutex_); \
+                      x; \
+                      pthread_mutex_unlock(&mutex_);
+
 pthread_mutex_t mutex_;
 banker_t banker_;
 
 void* runner(void* parameters) {
-  // FIXME
   customer_t* customer = (customer_t*)parameters;
 
   int i = 0;
 
+  MUTEX_SAFE(printf("[INFO] Customer thread p#%d has started..\n",
+                    customer->get_number()))
 
-  pthread_mutex_lock(&mutex_);
-  printf("[INFO] Customer thread p#%d has started..\n", customer->get_number());
-  //pthread_mutex_unlock(&mutex_);
-  
-  // NOTE : BORKED!
+
   while(!customer->needs_met() && i < DEADLOCK) {
     int index = customer->get_number();
     bool approved = banker_.can_grant_request(index, customer->get_request());
 
     if(approved) {
-      printf("[APPROVED] Granting process %d the desired resources\n", index);
+      MUTEX_SAFE(printf(
+          "[APPROVED] Granting process %d the desired resources\n", index))
       banker_.withdrawl_resources(customer);
-      std::cout << banker_ << std::endl;
-    } else {
-      printf("[DENIED] Will not grant process %d desired resources\n", index);
-    }
-    if(customer->needs_met()){
-      printf("[RECIEVED] Process %d has been sataiated and will give its resources back\n", index);
-      banker_.deposit(customer);
+
+      MUTEX_SAFE(std::cout << banker_ << std::endl)
+
+      if(customer->needs_met()){
+        MUTEX_SAFE(
+            printf("[RECIEVED] Process %d has been sataiated and will give its "
+                   "resources back\n",
+                   index))
+        banker_.deposit(customer);
+      }
+
+    } 
+    else {
+      MUTEX_SAFE(printf(
+          "[DENIED] Will not grant process %d desired resources\n", index))
     }
     ++i;
   }
+  //pthread_mutex_unlock(&mutex_);
   
+  // NOTE : BORKED!
+  //bool cust_need_met = false; 
+  ////while(!customer->needs_met() && i < DEADLOCK) {
+  //while(!cust_need_met && i < DEADLOCK) {
+    //int index = customer->get_number();
+    ////bool approved = banker_.can_grant_request(index, customer->get_request());
+    //cust_need_met = true; // FIXME | NAIVE, assume we get the resource
+
+    //if(cust_need_met) {
+    ////if(approved) {
+      //printf("[APPROVED] Granting process %d the desired resources\n", index);
+      ////banker_.withdrawl_resources(customer);
+      //std::cout << banker_ << std::endl;
+    //} else {
+      //printf("[DENIED] Will not grant process %d desired resources\n", index);
+    //}
+    ////if(customer->needs_met()){
+      ////printf("[RECIEVED] Process %d has been sataiated and will give its resources back\n", index);
+      ////banker_.deposit(customer);
+    ////}
+    //++i;
+  //}
+
+  MUTEX_SAFE(printf("[INFO] Customer thread p#%d has completed..\n",
+                    customer->get_number());)
   //pthread_mutex_lock(&mutex_);
-  printf("[INFO] Customer thread p#%d has completed..\n", customer->get_number());
-  pthread_mutex_unlock(&mutex_);
+  //pthread_mutex_unlock(&mutex_);
+
   if(i < DEADLOCK){
     pthread_exit(EXIT_SUCCESS);
   } else {
@@ -59,11 +97,12 @@ void* runner(void* parameters) {
 banker_t::banker_t(EVec::extended_vector_t<int> container, std::vector<customer_t*> customers) {
   this->available_funds = container;
   this->customers = customers;
+  this->finished = std::vector<bool>(customers.size(), false);
 }
 
 banker_t::banker_t(){
   this->available_funds = EVec::extended_vector_t<int>();
-  //this->customers = &std::vector<customer_t*>();
+  this->finished = std::vector<bool>(customers.size(), false);
 }
 
 EVec::extended_vector_t<int> banker_t::get_available_funds(){
@@ -77,10 +116,18 @@ void banker_t::update_avaialble_funds(EVec::extended_vector_t<int> container) {
 
 template <typename T>
 bool all(std::vector<T> container){
-  for(bool element : container){
+  for(T element : container){
     if(!element){ return false; }
   }
   return true;
+}
+
+template <typename T>
+
+void fill(std::vector<T> container, T k) {
+  for(size_t i = 0; i < container.size(); ++i) {
+    container[i] = k;
+  }
 }
 
 bool banker_t::can_grant_request(int index, EVec::extended_vector_t<int> request){
@@ -90,64 +137,87 @@ bool banker_t::can_grant_request(int index, EVec::extended_vector_t<int> request
    * Algorithm taken from the lecture slides
   */
 
+  if(request > this->available_funds){
+    // if we exceed the available resources, this is an automatic denial of service
+    return false;
+  }
+
+  // NOTE : SAFETY ALGORITHM
+
   size_t _n_procs = this->customers.size(); // number of processes
   size_t _m_resources = this->customers[0]->get_maximum().size(); // number of resources
 
-  // Vector that notes if each process would have finished if given the proper resources
-  std::vector<bool> finish(_n_procs, false);
-
   //  PRETEND TO ALLOCATE
+  
+  /*
+   * Available = Available - Request(i) [t_available]
+   * Allocation(i) = Allocation(i) + Request(i) [NOTE : NOT DONE HERE]
+   * Need(i) = Need(i) - Request(i)
+  */
+
   EVec::extended_vector_t<int> t_available = this->available_funds - request;
-  // Variable we can manipulate throughout the for loop
-  EVec::extended_vector_t<int> work = t_available;
+  //
+  //EVec::extended_vector_t<int> work = this->available_funds - request;
 
   // Check the system to see if it's in a safe state
-  for(size_t i = 0; i < _n_procs; ++i) {
+  size_t i;
+  for(i = 0; i < _n_procs; ++i) {
     if (i == index) {
+      // assume that the current process is safe
+      this->finished[i] = true;
       continue;
-    }  // don't process the same node twice (these nodes are essentially being
-       // passed in by reference)
-    
+    }
     // Current need of the process
+    
     EVec::extended_vector_t<int> need_i = this->customers[i]->get_request();
     // Currently allocated resources
     // This vector gets updated if the process is given any resources
+    
     EVec::extended_vector_t<int> allocation_i = this->customers[i]->get_init();
 
+    
     // If the resource has a smaller resource footprint, then we can allow it
     // And if it does not exceed the available funds
-    if (request <= need_i && request <= available_funds) {
-      work -= request;          // decrease the amount of resources available
-      allocation_i += request;  // give the process the allocated resources
-      need_i -= request;        // remove the need for the process
+
+    if (need_i <= work && !this->finished[i]) {
+      
+
+      this->finished[i] = true;
+      work+=allocation_i;
 
       // If the need of a given process is less than the available resources
       // say that this process is allowing the system to be in a safe state
-      if (need_i <= work && finish[i] == false) {
-        finish[i] = true;
-        work += allocation_i;
-      } 
-
-      else { break; }
     } 
-      else {
-        // The process should automatically be denied resources
-        // as it would put the system in an unsafe state
-        return false;
-      }
+    else {
+      // The process should automatically be denied resources
+      // as it would put the system in an unsafe state
+      return false;
+    }
   }
+  
   // if all processes will result in a safe state
-  // we are okay
-  return all(finish);
+  // we are okay, else we are not
+  bool _all = all(this->finished);
+  fill(this->finished, false); // reset the finished states for the next iteration
+  return _all;
 }
 
 void banker_t::withdrawl_resources(customer_t* customer) {
   /*
    * Give resources to the customer
   */
+  EVec::extended_vector_t<int> customer_request = customer->get_request();
 
+  if(customer_request < this->available_funds) {
+    this->available_funds -= customer_request;
+    customer->obtain_resources();
+    this->total_allocated+=customer_request;
+  } else {
+    MUTEX_SAFE(
+        printf("[DENIED] Customer thread p#%d has been denied request..\n",
+               customer->get_number()))
+  }
   this->available_funds-=customer->get_request();
-  customer->obtain_resources();
 }
 
 void banker_t::deposit(customer_t* customer) {
@@ -170,7 +240,8 @@ void banker_t::conduct_simulation() {
   pthread_attr_init(&attr);
   pthread_mutexattr_init(&mutex_attr);
   pthread_mutex_init(&mutex_, &mutex_attr);
-
+  
+  this->finished = std::vector<bool>(this->customers.size(), false);
   banker_ = *this;
 
   // Create Threads

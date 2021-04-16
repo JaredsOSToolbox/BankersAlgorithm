@@ -4,6 +4,8 @@ OBJS =  $(OBJS_DIR)/customer_t.o $(OBJS_DIR)/reader_t.o $(OBJS_DIR)/banker_t.o
 
 COMPILER = clang++
 CFLAGS = -Wall -g -lpthread
+# TODO : I can forsee this causing issues when attempting to debug code
+ECFLAGS = -Os -fdata-sections -ffunctions-sections -Wl,-dead_strip
 OUTPUT = bankruptcy
 
 all: $(OBJS) main.cpp
