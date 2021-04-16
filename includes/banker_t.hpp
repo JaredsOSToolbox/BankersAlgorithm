@@ -34,5 +34,6 @@ class banker_t {
     
     std::vector<customer_t*> customers;
     std::vector<bool> finished;
+    //EVec::extended_vector_t<bool> finished;
 };
 

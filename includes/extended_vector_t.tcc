@@ -62,6 +62,26 @@ namespace EVec {
     return data.size();
   }
 
+  _U
+  bool extended_vector_t<U>::any_() const {
+    int i = 0;
+    for(U element : this->data) {
+      if(element){ i++; }
+    }
+    return (i > 0);
+  }
+
+  _U
+  bool extended_vector_t<U>::all_() const {
+    for(U element : this->data) {
+      if (!element) {
+        return false;
+      }  // NOTE : must have a comparator operator with a boolean in their class
+         // definition. Same applies to any_ function
+    }
+    return true;
+  }
+
   /*
    * END CAPACITY FUNCTIONS
   */

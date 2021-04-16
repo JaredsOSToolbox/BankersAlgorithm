@@ -92,6 +92,16 @@ bool all(std::vector<T> container){
   return true;
 }
 
+template <typename T>
+
+bool any_(std::vector<T> container) {
+  int i = 0;
+  for(auto element : container) {
+    if(element){ i++; }
+  }
+  return (i > 0);
+}
+
 bool banker_t::can_grant_request(int index, EVec::extended_vector_t<int> request){
   /*
    * NOTE
@@ -100,24 +110,14 @@ bool banker_t::can_grant_request(int index, EVec::extended_vector_t<int> request
   */
 
   size_t _n_procs = this->customers.size(); // number of processes
-  size_t _m_resources = this->customers[0]->get_maximum().size(); // number of resources
+  // size_t _m_resources = this->customers[0]->get_maximum().size(); // number of resources
 
   // Vector that notes if each process would have finished if given the proper resources
 
-  //  PRETEND TO ALLOCATE
-  // Variable we can manipulate throughout the for loop
-  EVec::extended_vector_t<int> work = this->available_funds - request;
+  EVec::extended_vector_t<int> work = this->available_funds;
 
   // Check the system to see if it's in a safe state
   for(size_t i = 0; i < _n_procs; ++i) {
-    if (i == index) {
-      this->finished[i] = true;
-      continue;
-    }  
-
-    // don't process the same node twice (these nodes are essentially being
-    // passed in by reference)
-    
     // Current need of the process
     EVec::extended_vector_t<int> need_i = this->customers[i]->get_request();
     // Currently allocated resources
@@ -126,11 +126,11 @@ bool banker_t::can_grant_request(int index, EVec::extended_vector_t<int> request
 
     // If the resource has a smaller resource footprint, then we can allow it
     // And if it does not exceed the available funds
-    if (this->finished[i] == false && need_i <= work) {
+    if (!this->finished[i] && need_i <= work) {
+      //  PRETEND TO ALLOCATE
       work += allocation_i;
       this->finished[i] = true;
     } 
-
     else {
       // The process should automatically be denied resources
       // as it would put the system in an unsafe state
@@ -139,9 +139,9 @@ bool banker_t::can_grant_request(int index, EVec::extended_vector_t<int> request
   }
   // if all processes will result in a safe state
   // we are okay
-  bool _all = all(finished);
-  this->finished = std::vector<bool>(this->customers.size(), false); // reset the finished vector
-  return _all;
+  bool a = any_(this->finished);
+  this->finished = std::vector<bool>(this->customers.size(), false);
+  return a;
 }
 
 void banker_t::withdrawl_resources(customer_t* customer) {

@@ -41,6 +41,9 @@ namespace EVec {
       bool empty() const;
       size_t size() const;
 
+      bool any_() const;
+      bool all_() const;
+
       /*
        * Modifiers
       */
