@@ -38,7 +38,7 @@ int main(int argc, const char* argv[]){
 
   banker_t banker = banker_t();
 
-  reader_t source = reader_t("inputs/bankers_tiny.txt", &banker);
+  reader_t source = reader_t("inputs/bankers_medium.txt", &banker);
   //reader_t source = reader_t(std::string(argv[1]), &banker);
   
   //reader_t source = reader_t("inputs/bankers_tiny.txt", &customers, &banker);
