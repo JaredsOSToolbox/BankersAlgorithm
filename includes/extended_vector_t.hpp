@@ -43,6 +43,7 @@ namespace EVec {
 
       bool any_() const;
       bool all_() const;
+      T sum() const;
 
       /*
        * Modifiers
