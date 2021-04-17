@@ -29,7 +29,7 @@ void* runner(void* parameters) {
 
   while (!customer->needs_met() && i < DEADLOCK) {
     int index = customer->get_number();
-    bool approved = banker_.can_grant_request(index, customer->get_request());
+    bool approved = banker_.can_grant_request(index, customer->request());
 
     if (approved) {
       MUTEX_SAFE(printf(
@@ -130,7 +130,7 @@ void banker_t::withdrawl_resources(customer_t* customer) {
    * Give resources to the customer
   */
 
-  this->available_funds-=customer->get_request();
+  this->available_funds-=customer->request();
   customer->obtain_resources();
 }
 
