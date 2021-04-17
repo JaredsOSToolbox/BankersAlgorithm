@@ -16,12 +16,9 @@ class customer_t {
 
     int get_number();
     pthread_t* get_pthread_id();
-    //std::vector<int> get_maximum();
     EVec::extended_vector_t<int> get_maximum();
-
     EVec::extended_vector_t<int> get_request();
     EVec::extended_vector_t<int> get_init();
-    //std::vector<int> get_request();
     bool needs_met();
 
     //void* runner(void*);

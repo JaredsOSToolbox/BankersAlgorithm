@@ -17,6 +17,7 @@ class banker_t {
     void update_avaialble_funds(EVec::extended_vector_t<int>);
 
     bool can_grant_request(int, EVec::extended_vector_t<int>);
+    bool is_safe(int, EVec::extended_vector_t<int>);
 
     void conduct_simulation();
     void withdrawl_resources(customer_t*);
@@ -26,6 +27,9 @@ class banker_t {
 
     void add_customers(std::vector<customer_t*>);
 
+    int resources() const;
+    int processes() const;
+
     friend std::ostream& operator<<(std::ostream&, const banker_t&);
 
   private:
@@ -34,6 +38,7 @@ class banker_t {
     
     std::vector<customer_t*> customers;
     std::vector<bool> finished;
+    int _m_resources, _n_processes;
     //EVec::extended_vector_t<bool> finished;
 };
 

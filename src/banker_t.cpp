@@ -68,11 +68,14 @@ void* runner(void* parameters) {
 banker_t::banker_t(EVec::extended_vector_t<int> container, std::vector<customer_t*> customers) {
   this->available_funds = container;
   this->customers = customers;
+  this->_n_processes = customers.size();
+  this->_m_resources = customers[0]->get_init().size();
 }
 
 banker_t::banker_t(){
   this->available_funds = EVec::extended_vector_t<int>();
-  //this->customers = &std::vector<customer_t*>();
+  this->_n_processes = 0;
+  this->_m_resources = 0;
 }
 
 EVec::extended_vector_t<int> banker_t::get_available_funds(){
@@ -102,6 +105,15 @@ bool any_(std::vector<T> container) {
   return (i > 0);
 }
 
+bool banker_t::is_safe(int index, EVec::extended_vector_t<int> request){
+  // grant request temp
+  // go through list of customers
+  // are there enough resources for at least one customers to get it's max
+  // roll back request
+  
+  return true;
+}
+
 bool banker_t::can_grant_request(int index, EVec::extended_vector_t<int> request){
   /*
    * NOTE
@@ -109,39 +121,8 @@ bool banker_t::can_grant_request(int index, EVec::extended_vector_t<int> request
    * Algorithm taken from the lecture slides
   */
 
-  size_t _n_procs = this->customers.size(); // number of processes
-  // size_t _m_resources = this->customers[0]->get_maximum().size(); // number of resources
-
-  // Vector that notes if each process would have finished if given the proper resources
-
-  EVec::extended_vector_t<int> work = this->available_funds;
-
-  // Check the system to see if it's in a safe state
-  for(size_t i = 0; i < _n_procs; ++i) {
-    // Current need of the process
-    EVec::extended_vector_t<int> need_i = this->customers[i]->get_request();
-    // Currently allocated resources
-    // This vector gets updated if the process is given any resources
-    EVec::extended_vector_t<int> allocation_i = this->customers[i]->get_init();
-
-    // If the resource has a smaller resource footprint, then we can allow it
-    // And if it does not exceed the available funds
-    if (!this->finished[i] && need_i <= work) {
-      //  PRETEND TO ALLOCATE
-      work += allocation_i;
-      this->finished[i] = true;
-    } 
-    else {
-      // The process should automatically be denied resources
-      // as it would put the system in an unsafe state
-      return false;
-    }
-  }
-  // if all processes will result in a safe state
-  // we are okay
-  bool a = any_(this->finished);
-  this->finished = std::vector<bool>(this->customers.size(), false);
-  return a;
+  if(request > this->available_funds){ return false; }
+  return this->is_safe(index, request);
 }
 
 void banker_t::withdrawl_resources(customer_t* customer) {
@@ -195,6 +176,9 @@ void banker_t::conduct_simulation() {
 void banker_t::add_customers(std::vector<customer_t*> container) {
   this->customers = container;
 }
+
+int banker_t::resources() const { return this->_m_resources; }
+int banker_t::processes() const { return this->_n_processes; }
 
 std::vector<customer_t*> banker_t::get_customers() const{
   return this->customers;
