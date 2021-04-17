@@ -29,7 +29,7 @@ void* runner(void* parameters) {
 
   while (!customer->needs_met() && i < DEADLOCK) {
     int index = customer->get_number();
-    bool approved = banker_.can_grant_request(index, customer->request());
+    bool approved = banker_.can_grant_request(index, customer->get_request());
 
     if (approved) {
       MUTEX_SAFE(printf(
@@ -88,23 +88,18 @@ void banker_t::update_avaialble_funds(EVec::extended_vector_t<int> container) {
 }
 
 template <typename T>
-// would be helpful to pass in a function pointer
-bool all(EVec::extended_vector_t<T> container){
-  for(T element : container.get_data()){
-    if (element >= 0) {
-      continue;
-    } else {
-      return false;
-    }
+bool all(std::vector<T> container){
+  for(bool element : container){
+    if(!element){ return false; }
   }
   return true;
 }
 
 template <typename T>
 
-bool any_(EVec::extended_vector_t<T> container) {
+bool any_(std::vector<T> container) {
   int i = 0;
-  for(auto element : container.get_data()) {
+  for(auto element : container) {
     if(element){ i++; }
   }
   return (i > 0);
@@ -116,27 +111,6 @@ bool banker_t::is_safe(int index, EVec::extended_vector_t<int> request){
   // are there enough resources for at least one customers to get it's max
   // roll back request
   
-  EVec::extended_vector_t<int> total_available = this->available_funds - this->total_allocated;
-
-  std::vector<bool> running(this->processes(), true);
-
-  for(size_t i = 0; i < this->processes(); ++i) {
-    bool at_least_one_allocated = false;
-    for(size_t j = 0; j < this->processes(); ++j) {
-     
-     if(running[i]){
-       auto _temp = total_available - (this->customers[j]->get_maximum() -
-                                       this->customers[j]->get_init());
-       if(all(_temp)){
-         at_least_one_allocated = true;
-         running[j] = false;
-         total_available += this->customers[j]->get_init();
-       }
-     }
-
-    }
-    if(!at_least_one_allocated){ return false; }
-  }
   return true;
 }
 
@@ -148,10 +122,6 @@ bool banker_t::can_grant_request(int index, EVec::extended_vector_t<int> request
   */
 
   if(request > this->available_funds){ return false; }
-  if (this->customers[index]->request_exceeds_needs()) {
-    return false;
-  }
-
   return this->is_safe(index, request);
 }
 
@@ -160,9 +130,7 @@ void banker_t::withdrawl_resources(customer_t* customer) {
    * Give resources to the customer
   */
 
-  this->available_funds-=customer->request();
-  this->total_allocated+=customer->request();
-
+  this->available_funds-=customer->get_request();
   customer->obtain_resources();
 }
 
@@ -173,8 +141,6 @@ void banker_t::deposit(customer_t* customer) {
   */
 
   this->available_funds+=customer->get_maximum();
-  this->total_allocated-=customer->get_maximum();
-
   customer->drop_resources();
 }
 

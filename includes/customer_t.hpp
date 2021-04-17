@@ -16,17 +16,13 @@ class customer_t {
 
     int get_number();
     pthread_t* get_pthread_id();
-
     EVec::extended_vector_t<int> get_maximum();
+    EVec::extended_vector_t<int> get_request();
     EVec::extended_vector_t<int> get_init();
-    EVec::extended_vector_t<int> request();
-
-    void generate_request();
-    void clear_request();
-
     bool needs_met();
-    bool request_exceeds_needs();
 
+    //void* runner(void*);
+  
     void print();
 
     void drop_resources(); // deposit funds
@@ -42,7 +38,7 @@ class customer_t {
     //std::vector<int> request;
     //std::vector<int> maximum;
 
-    EVec::extended_vector_t<int> initial_allocation, need, maximum, request_; // request is randomly generated
+    EVec::extended_vector_t<int> initial_allocation, request, maximum;
     int number;
 
     pthread_t thread_id;

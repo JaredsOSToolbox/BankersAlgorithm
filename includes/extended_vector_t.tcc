@@ -82,14 +82,6 @@ namespace EVec {
     return true;
   }
 
-  _U
-  
-  U extended_vector_t<U>::sum() const {
-    U _ret;
-    for(U element : this->data){ _ret += element; }
-    return _ret;
-  }
-
   /*
    * END CAPACITY FUNCTIONS
   */
