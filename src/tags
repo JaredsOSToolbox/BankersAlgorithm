@@ -1,0 +1,56 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_OUTPUT_EXCMD	mixed	/number, pattern, mixed, or combineV2/
+!_TAG_OUTPUT_FILESEP	slash	/slash or backslash/
+!_TAG_OUTPUT_MODE	u-ctags	/u-ctags or e-ctags/
+!_TAG_PATTERN_LENGTH_LIMIT	96	/0 for no limit/
+!_TAG_PROC_CWD	/home/jared/Projects/BankersAlgorithm/src/	//
+!_TAG_PROGRAM_AUTHOR	Universal Ctags Team	//
+!_TAG_PROGRAM_NAME	Universal Ctags	/Derived from Exuberant Ctags/
+!_TAG_PROGRAM_URL	https://ctags.io/	/official site/
+!_TAG_PROGRAM_VERSION	5.9.0	/p5.9.20210110.0/
+DEADLOCK	banker_t.cpp	/^#define DEADLOCK /;"	d	file:
+MUTEX_SAFE	banker_t.cpp	/^#define MUTEX_SAFE(/;"	d	file:
+SPACES	reader_t.cpp	/^#define SPACES /;"	d	file:
+add_customers	banker_t.cpp	/^void banker_t::add_customers(std::vector<customer_t*> container) {$/;"	f	class:banker_t	typeref:typename:void
+all	banker_t.cpp	/^bool all(std::vector<T> container){$/;"	f	typeref:typename:bool
+any_	banker_t.cpp	/^bool any_(std::vector<T> container) {$/;"	f	typeref:typename:bool
+banker_	banker_t.cpp	/^banker_t banker_;$/;"	v	typeref:typename:banker_t
+banker_t	banker_t.cpp	/^banker_t::banker_t(){$/;"	f	class:banker_t
+banker_t	banker_t.cpp	/^banker_t::banker_t(EVec::extended_vector_t<int> container, std::vector<customer_t*> customers) {$/;"	f	class:banker_t
+can_grant_request	banker_t.cpp	/^bool banker_t::can_grant_request(int index, EVec::extended_vector_t<int> request){$/;"	f	class:banker_t	typeref:typename:bool
+conduct_simulation	banker_t.cpp	/^void banker_t::conduct_simulation() {$/;"	f	class:banker_t	typeref:typename:void
+customer_t	customer_t.cpp	/^customer_t::customer_t() {$/;"	f	class:customer_t
+customer_t	customer_t.cpp	/^customer_t::customer_t(EVec::extended_vector_t<int> init, EVec::extended_vector_t<int> request, /;"	f	class:customer_t
+deposit	banker_t.cpp	/^void banker_t::deposit(customer_t* customer) {$/;"	f	class:banker_t	typeref:typename:void
+drop_resources	customer_t.cpp	/^void customer_t::drop_resources(){$/;"	f	class:customer_t	typeref:typename:void
+generate_request	customer_t.cpp	/^void customer_t::generate_request(){$/;"	f	class:customer_t	typeref:typename:void
+get_available_funds	banker_t.cpp	/^EVec::extended_vector_t<int> banker_t::get_available_funds(){$/;"	f	class:banker_t	typeref:typename:EVec::extended_vector_t<int>
+get_content	reader_t.cpp	/^std::vector<std::string> reader_t::get_content() { return this->content; }$/;"	f	class:reader_t	typeref:typename:std::vector<std::string>
+get_customers	banker_t.cpp	/^std::vector<customer_t*> banker_t::get_customers() const{$/;"	f	class:banker_t	typeref:typename:std::vector<customer_t * >
+get_init	customer_t.cpp	/^EVec::extended_vector_t<int> customer_t::get_init(){$/;"	f	class:customer_t	typeref:typename:EVec::extended_vector_t<int>
+get_length	reader_t.cpp	/^size_t reader_t::get_length() { return this->content.size(); }$/;"	f	class:reader_t	typeref:typename:size_t
+get_maximum	customer_t.cpp	/^EVec::extended_vector_t<int> customer_t::get_maximum(){$/;"	f	class:customer_t	typeref:typename:EVec::extended_vector_t<int>
+get_number	customer_t.cpp	/^int customer_t::get_number() {$/;"	f	class:customer_t	typeref:typename:int
+get_path	reader_t.cpp	/^std::string reader_t::get_path() { return this->path; }$/;"	f	class:reader_t	typeref:typename:std::string
+get_pthread_id	customer_t.cpp	/^pthread_t* customer_t::get_pthread_id(){ return &thread_id; }$/;"	f	class:customer_t	typeref:typename:pthread_t *
+is_safe	banker_t.cpp	/^bool banker_t::is_safe(int index, EVec::extended_vector_t<int> request){$/;"	f	class:banker_t	typeref:typename:bool
+mutex_	banker_t.cpp	/^pthread_mutex_t mutex_;$/;"	v	typeref:typename:pthread_mutex_t
+needs_met	customer_t.cpp	/^bool customer_t::needs_met(){$/;"	f	class:customer_t	typeref:typename:bool
+obtain_resources	customer_t.cpp	/^void customer_t::obtain_resources() {$/;"	f	class:customer_t	typeref:typename:void
+operator <<	banker_t.cpp	/^std::ostream& operator<<(std::ostream& os, const banker_t& banker){$/;"	f	typeref:typename:std::ostream &
+operator <<	customer_t.cpp	/^std::ostream& operator<<(std::ostream& os, const customer_t& customer) {$/;"	f	typeref:typename:std::ostream &
+print	customer_t.cpp	/^void customer_t::print() {$/;"	f	class:customer_t	typeref:typename:void
+print_contents	reader_t.cpp	/^void reader_t::print_contents() {$/;"	f	class:reader_t	typeref:typename:void
+print_vector	customer_t.cpp	/^void print_vector(std::vector<int> container) {$/;"	f	typeref:typename:void
+process_line	reader_t.cpp	/^std::vector<EVec::extended_vector_t<int>> reader_t::process_line(std::string line) {$/;"	f	class:reader_t	typeref:typename:std::vector<EVec::extended_vector_t<int>>
+processes	banker_t.cpp	/^int banker_t::processes() const { return this->_n_processes; }$/;"	f	class:banker_t	typeref:typename:int
+read_contents	reader_t.cpp	/^std::vector<std::string> reader_t::read_contents(banker_t* banker) {$/;"	f	class:reader_t	typeref:typename:std::vector<std::string>
+reader_t	reader_t.cpp	/^reader_t::reader_t() {$/;"	f	class:reader_t
+reader_t	reader_t.cpp	/^reader_t::reader_t(std::string path, banker_t* banker) {$/;"	f	class:reader_t
+request	customer_t.cpp	/^EVec::extended_vector_t<int> customer_t::request() {$/;"	f	class:customer_t	typeref:typename:EVec::extended_vector_t<int>
+resources	banker_t.cpp	/^int banker_t::resources() const { return this->_m_resources; }$/;"	f	class:banker_t	typeref:typename:int
+runner	banker_t.cpp	/^void* runner(void* parameters) {$/;"	f	typeref:typename:void *
+set_number	customer_t.cpp	/^void customer_t::set_number(int number){$/;"	f	class:customer_t	typeref:typename:void
+update_avaialble_funds	banker_t.cpp	/^void banker_t::update_avaialble_funds(EVec::extended_vector_t<int> container) {$/;"	f	class:banker_t	typeref:typename:void
+withdrawl_resources	banker_t.cpp	/^void banker_t::withdrawl_resources(customer_t* customer) {$/;"	f	class:banker_t	typeref:typename:void

@@ -9,11 +9,11 @@
 #include <pthread.h>
 #include <unistd.h>
 
+#define PEDANTIC true
 
 #define MUTEX_SAFE(x) pthread_mutex_lock(&mutex_); \
                       x; \
                       pthread_mutex_unlock(&mutex_);
-
 #define DEADLOCK 100
 
 pthread_mutex_t mutex_;
@@ -24,42 +24,50 @@ void* runner(void* parameters) {
 
   int i = 0;
 
-  MUTEX_SAFE(printf("[INFO] Customer thread p#%d has started..\n",
-                    customer->get_number()))
+  //VERBOSE(printf("[INFO] Customer thread p#%d has started..\n",
+                 //customer->get_number()),
+          //PEDANTIC)
 
   while (!customer->needs_met() && i < DEADLOCK) {
     int index = customer->get_number();
     bool approved = banker_.can_grant_request(index, customer->request());
 
     if (approved) {
-      MUTEX_SAFE(printf(
-          "[APPROVED] Granting process %d the desired resources\n", index))
+
+      //VERBOSE(printf("[APPROVED] Granting process %d the desired resources\n",
+                     //index), PEDANTIC)
+
       banker_.withdrawl_resources(customer);
 
-      MUTEX_SAFE(std::cout << banker_ << std::endl)
+      //VERBOSE(std::cout << banker_ << std::endl, PEDANTIC)
 
       if (customer->needs_met()) {
-        MUTEX_SAFE(
-            printf("[RECIEVED] Process %d has been sataiated and will give its "
-                   "resources back\n",
-                   index))
+        //VERBOSE(
+            //printf("[RECIEVED] Process %d has been sataiated and will give its "
+                   //"resources back\n",
+                   //index), PEDANTIC)
         banker_.deposit(customer);
       }
 
     } else {
-      MUTEX_SAFE(printf(
-          "[DENIED] Will not grant process %d desired resources\n", index))
+      //VERBOSE(printf("[DENIED] Will not grant process %d desired resources\n",
+                     //index),
+              //PEDANTIC)
     }
     ++i;
   }
-
-  MUTEX_SAFE(printf("[INFO] Customer thread p#%d has completed..\n",
-                    customer->get_number());)
+  //VERBOSE(printf("[INFO] Customer thread p#%d has completed..\n",
+                 //customer->get_number()), PEDANTIC)
+  
+  #undef SUCCESS
   if (i < DEADLOCK) {
+    #define SUCCESS true
     pthread_exit(EXIT_SUCCESS);
   } else {
-    std::cerr << "[FATAL] Algorithm has entered a deadlocked state!"
-              << std::endl;
+    #define SUCCESS false
+    //VERBOSE(std::cerr << "[FATAL] Algorithm has entered a deadlocked state!"
+                      //<< std::endl,
+            //PEDANTIC)
     pthread_exit(
         (void*)EXIT_FAILURE);  // uhhh what's going on clang, are you drunk?
   }
@@ -111,6 +119,31 @@ bool banker_t::is_safe(int index, EVec::extended_vector_t<int> request){
   // are there enough resources for at least one customers to get it's max
   // roll back request
   
+  int count = 0;
+  bool flag = false;
+  size_t i = 0, j = 0;
+  std::vector<bool> visited(this->processes(), false);
+  EVec::extended_vector_t<int> work;
+  
+  while(count < this->processes()) {
+    flag = false;
+    for(i = 0; i < this->processes(); ++i) {
+      if(!visited[i]) {
+        j = 0;
+        for(j = 0; j < this->resources(); ++j) {
+          if(this->customers[i]->get_init() > this->available_funds) { break; }
+          if(j == this->resources()) {
+            visited[i] = true;
+            flag = true;
+            work+=this->total_allocated;
+          }
+        }
+
+      }
+    }
+    if(!flag){ return false; }
+  }
+
   return true;
 }
 
@@ -144,7 +177,14 @@ void banker_t::deposit(customer_t* customer) {
   customer->drop_resources();
 }
 
-void banker_t::conduct_simulation() {
+bool banker_t::conduct_simulation(bool pedantic) {
+  #undef PEDANTIC
+  if(pedantic) {
+    #define PEDANTIC true
+  } else {
+    #define PEDANTIC false
+  }
+
   printf("[INFO] Conducting the simulation...\n");
 
   pthread_t tid[customers.size()];
@@ -170,6 +210,8 @@ void banker_t::conduct_simulation() {
     pthread_join(tid[i++], NULL);
   }
   std::cout << banker_ << std::endl;
+
+  return SUCCESS;
 }
 
 

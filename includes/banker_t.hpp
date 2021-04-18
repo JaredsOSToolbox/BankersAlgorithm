@@ -19,7 +19,7 @@ class banker_t {
     bool can_grant_request(int, EVec::extended_vector_t<int>);
     bool is_safe(int, EVec::extended_vector_t<int>);
 
-    void conduct_simulation();
+    bool conduct_simulation(bool);
     void withdrawl_resources(customer_t*);
     void deposit(customer_t*);
 

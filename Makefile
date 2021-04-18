@@ -3,7 +3,7 @@ OBJS =  $(OBJS_DIR)/customer_t.o $(OBJS_DIR)/reader_t.o $(OBJS_DIR)/banker_t.o
 #OBJS =  $(OBJS_DIR)/customer_t.o $(OBJS_DIR)/reader_t.o
 
 COMPILER = clang++
-CFLAGS = -Wall -g -lpthread
+CFLAGS = -Wall -g -lpthread -std=c++17
 # TODO : I can forsee this causing issues when attempting to debug code
 ECFLAGS = -Os -fdata-sections -ffunctions-sections -Wl,-dead_strip
 OUTPUT = bankruptcy
