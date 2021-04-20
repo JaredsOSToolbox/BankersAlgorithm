@@ -14,7 +14,7 @@
 
 pthread_mutex_t mutex_;
 banker_t banker_;
-bool STATUS = true, ALLOCATION_STATUS;
+bool STATUS = false, ALLOCATION_STATUS;
 
 void change_value(bool* instance, bool value){ *instance = value; }
 
