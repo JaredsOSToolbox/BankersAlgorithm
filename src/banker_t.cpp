@@ -14,7 +14,7 @@
 
 pthread_mutex_t mutex_;
 banker_t banker_;
-bool STATUS, ALLOCATION_STATUS;
+bool STATUS = true, ALLOCATION_STATUS;
 
 void change_value(bool* instance, bool value){ *instance = value; }
 
@@ -60,7 +60,7 @@ void* runner(void* parameters) {
   MUTEX_SAFE(printf("[INFO] Customer thread p#%d has completed..\n",
                  customer->get_number()))
   
-  if (i < DEADLOCK) {
+  if (i <= DEADLOCK) {
     change_value(&STATUS, true);
     pthread_exit(EXIT_SUCCESS);
   } else {

@@ -14,13 +14,15 @@
 #include "includes/reader_t.hpp"
 #include "includes/utils.hpp"
 
-#define MAX_TEST_ITERATIONS 1000
+#define MAX_TEST_ITERATIONS 10
 
 
 
 int main(int argc, const char* argv[]){
   //std::vector<bool> _container(1, false);
-  //Utils::conduct_certain_test(false, "inputs/01_bankers_tiny.txt", &_container, 0);
+  //for(int i = 0; i < MAX_TEST_ITERATIONS; ++i) {
+    //Utils::conduct_certain_test(false, "inputs/02_bankers_small.txt", &_container, 0);
+  //}
   Utils::conduct_all(false);
   return 0;
 }
