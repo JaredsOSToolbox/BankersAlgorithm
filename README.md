@@ -1,2 +1,2 @@
 # BankersAlgorithm
-Deadlock avoidence simulation written in C
+Deadlock avoidence simulation written in C++
