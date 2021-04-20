@@ -6,6 +6,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <stdexcept> 
 #include <stdio.h>
 #include <pthread.h>
 #include <unistd.h>
@@ -13,7 +14,7 @@
 
 pthread_mutex_t mutex_;
 banker_t banker_;
-bool STATUS;
+bool STATUS, ALLOCATION_STATUS;
 
 void change_value(bool* instance, bool value){ *instance = value; }
 
@@ -36,6 +37,9 @@ void* runner(void* parameters) {
                      index))
 
       banker_.withdrawl_resources(customer);
+      if(!ALLOCATION_STATUS) {
+        MUTEX_SAFE(printf("[DENIED] Allocation would have lead to an underdraft of resources\n"))
+      }
 
       MUTEX_SAFE(std::cout << banker_ << std::endl)
 
@@ -152,8 +156,14 @@ void banker_t::withdrawl_resources(customer_t* customer) {
    * Give resources to the customer
   */
 
-  this->available_funds-=customer->request();
-  customer->obtain_resources();
+  //this->available_funds-=customer->request();
+  try{ 
+    this->available_funds = this->overdraft_check(customer->request());
+    customer->obtain_resources();
+    change_value(&ALLOCATION_STATUS, true);
+  } catch(std::exception& e) {
+    change_value(&ALLOCATION_STATUS, false);
+  }
 }
 
 void banker_t::deposit(customer_t* customer) {
@@ -164,6 +174,18 @@ void banker_t::deposit(customer_t* customer) {
 
   this->available_funds+=customer->get_maximum();
   customer->drop_resources();
+}
+
+EVec::extended_vector_t<int> banker_t::overdraft_check(EVec::extended_vector_t<int> request) {
+  EVec::extended_vector_t<int> resultant(request.size(), 0);
+  for(size_t i = 0; i < request.size(); ++i) {
+    int _r = this->available_funds[i] - request[i];
+    if(_r < 0) {
+      throw std::logic_error("overdraft occurred!");
+    } // overdraft occurs
+    resultant[i] = _r;
+  }
+  return resultant;
 }
 
 bool banker_t::conduct_simulation(bool pedantic) {

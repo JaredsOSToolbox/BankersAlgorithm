@@ -23,6 +23,8 @@ class banker_t {
     void withdrawl_resources(customer_t*);
     void deposit(customer_t*);
 
+    EVec::extended_vector_t<int> overdraft_check(EVec::extended_vector_t<int>);
+
     std::vector<customer_t*> get_customers() const;
 
     void add_customers(std::vector<customer_t*>);

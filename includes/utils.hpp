@@ -17,7 +17,7 @@ namespace Utils {
   #define MUTEX_SAFE(x) pthread_mutex_lock(&mutex_); \
                       x; \
                       pthread_mutex_unlock(&mutex_);
-  #define DEADLOCK 100
+  #define DEADLOCK 500
 
   void usage(void);
   void version(void);
