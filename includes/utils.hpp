@@ -17,7 +17,7 @@ namespace Utils {
   #define MUTEX_SAFE(x) pthread_mutex_lock(&mutex_); \
                       x; \
                       pthread_mutex_unlock(&mutex_);
-  #define DEADLOCK 1000
+  #define DEADLOCK 100
 
   void usage(void);
   void version(void);
@@ -29,5 +29,7 @@ namespace Utils {
   bool any_(Container&);
 
   void conduct_all(bool);
+
+  void conduct_certain_test(bool, std::string, std::vector<bool>*, int);
 }
 

@@ -110,37 +110,30 @@ bool any_(std::vector<T> container) {
 }
 
 bool banker_t::is_safe(int index, EVec::extended_vector_t<int> request){
-  // grant request temp
-  // go through list of customers
-  // are there enough resources for at least one customers to get it's max
-  // roll back request
-  
   int count = 0;
-  bool flag = false;
+  bool execute = true;
+
   size_t i = 0, j = 0;
   std::vector<bool> visited(this->processes(), false);
-  EVec::extended_vector_t<int> work;
-  
-  while(count < this->processes()) {
-    flag = false;
-    for(i = 0; i < this->processes(); ++i) {
-      if(!visited[i]) {
-        j = 0;
-        for(j = 0; j < this->resources(); ++j) {
-          if(this->customers[i]->get_init() > this->available_funds) { break; }
-          if(j == this->resources()) {
-            visited[i] = true;
-            flag = true;
-            work+=this->total_allocated;
-          }
-        }
+  EVec::extended_vector_t<int> work = this->available_funds;
 
+  while(count < this->processes()) {
+    bool flag = false;
+    for(i = 0; i < this->processes(); ++i) { // look at all the processes available
+      execute = true;
+      if(!visited[i]) {
+        if(this->customers[i]->request() > work) { execute = false; break; }
+        else {
+          work+=this->customers[i]->get_init();
+          count++;
+          visited[i] = true;
+          flag = true;
+        }
       }
     }
-    if(!flag){ return false; }
+    if(!flag){ break; }
   }
-
-  return true;
+  return (count < this->processes()) ? false : true;
 }
 
 bool banker_t::can_grant_request(int index, EVec::extended_vector_t<int> request){

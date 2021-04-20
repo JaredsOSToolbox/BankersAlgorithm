@@ -63,6 +63,17 @@ namespace Utils {
     return (_count > 0);
   }
 
+  void conduct_certain_test(bool verbose, std::string file_path, std::vector<bool>* success, int index) {
+      const char* _path = file_path.c_str();
+      printf("[INFO] Conducting test on %s\n", _path);
+      banker_t banker = banker_t();
+
+      reader_t source = reader_t(_path, &banker);
+      std::cout << banker << std::endl; 
+      bool _success = banker.conduct_simulation(verbose);
+      (*success)[index] = _success;
+  }
+
   void conduct_all(bool verbose) {
 
     std::vector<bool> iterations(TEST_COUNT, false); // we know how many tests there are
@@ -72,14 +83,7 @@ namespace Utils {
     int i = 0;
 
     for(auto& entry : paths) {
-      const char* _path = entry.c_str();
-      printf("[INFO] Conducting test on %s\n", _path);
-      banker_t banker = banker_t();
-
-      reader_t source = reader_t(_path, &banker);
-      std::cout << banker << std::endl; 
-      bool success = banker.conduct_simulation(verbose);
-      iterations[i++] = success;
+      conduct_certain_test(verbose, entry, &iterations, i++);
     }
 
     assert(all(iterations) == true);

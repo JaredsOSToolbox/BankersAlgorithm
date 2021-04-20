@@ -196,7 +196,11 @@ namespace EVec {
 
   _U
   bool extended_vector_t<U>::operator<(const extended_vector_t<U>& other) const {
-    return data < other.data;
+    for(size_t i = 0; i < data.size(); ++i) {
+      if(data[i] > other.data[i]){ return false; } // if ANY instance of the current instance is bigger than the container being compared to, we need to immediately return false
+    }
+    //return data < other.data;
+    return true;
   }
 
   _U
@@ -206,7 +210,11 @@ namespace EVec {
 
   _U
   bool extended_vector_t<U>::operator>(const extended_vector_t<U>& other) const {
-    return data > other.data;
+    for(size_t i = 0; i < data.size(); ++i) {
+      if(data[i] < other.data[i]){ return false; } // if ANY instance of the current instance is less than the container being compared to, we need to immediately return false
+    }
+    //return data < other.data;
+    return true;
   }
 
   _U
