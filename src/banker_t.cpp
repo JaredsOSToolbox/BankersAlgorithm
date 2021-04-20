@@ -1,6 +1,7 @@
 #include "../includes/banker_t.hpp"
 #include "../includes/customer_t.hpp"
 #include "../includes/extended_vector_t.hpp"
+#include "../includes/utils.hpp"
 
 #include <iostream>
 #include <string>
@@ -9,18 +10,12 @@
 #include <pthread.h>
 #include <unistd.h>
 
-#define PEDANTIC true
-
-#define MUTEX_SAFE(x) pthread_mutex_lock(&mutex_); \
-                      x; \
-                      pthread_mutex_unlock(&mutex_);
-#define DEADLOCK 1000
 
 pthread_mutex_t mutex_;
 banker_t banker_;
-bool SUCCESS;
+bool STATUS;
 
-void change_modal(bool* flag, bool value) { *flag = value; }
+void change_value(bool* instance, bool value){ *instance = value; }
 
 void* runner(void* parameters) {
   customer_t* customer = (customer_t*)parameters;
@@ -62,10 +57,10 @@ void* runner(void* parameters) {
                  customer->get_number()))
   
   if (i < DEADLOCK) {
-    change_modal(&SUCCESS, true);
+    change_value(&STATUS, true);
     pthread_exit(EXIT_SUCCESS);
   } else {
-    change_modal(&SUCCESS, false);
+    change_value(&STATUS, false);
     MUTEX_SAFE(std::cerr << "[FATAL] Algorithm has entered a deadlocked state!"
                          << std::endl)
     pthread_exit(
@@ -205,7 +200,7 @@ bool banker_t::conduct_simulation(bool pedantic) {
   }
   std::cout << banker_ << std::endl;
 
-  return SUCCESS;
+  return STATUS;
 }
 
 
