@@ -82,6 +82,15 @@ namespace EVec {
     return true;
   }
 
+  _U
+  bool extended_vector_t<U>::contains_underflow() const {
+    int i = 0;
+    for(U element : this->data) {
+      if(element < 0) { ++i; }
+    }
+    return (i > 0);
+  }
+
   /*
    * END CAPACITY FUNCTIONS
   */

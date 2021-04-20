@@ -17,9 +17,6 @@
 
 
 int main(int argc, const char* argv[]){
-  //conduct_all(false);
-  std::vector<bool> example(4, true);
-  bool _resultant = Utils::all(example);
-  printf("%s\n", (_resultant) ? "true" : "false");
+  Utils::conduct_all(false);
   return 0;
 }

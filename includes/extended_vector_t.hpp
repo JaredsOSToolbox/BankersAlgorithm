@@ -44,6 +44,8 @@ namespace EVec {
       bool any_() const;
       bool all_() const;
 
+      bool contains_underflow() const;
+
       /*
        * Modifiers
       */
