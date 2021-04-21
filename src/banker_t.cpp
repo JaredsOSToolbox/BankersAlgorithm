@@ -55,6 +55,7 @@ void* runner(void* parameters) {
       MUTEX_SAFE(printf("[DENIED] Will not grant process %d desired resources\n",
                      index))
     }
+    banker_.clear_sequence();
     ++i;
   }
   MUTEX_SAFE(printf("[INFO] Customer thread p#%d has completed..\n",
@@ -129,7 +130,7 @@ bool banker_t::is_safe(int index, EVec::extended_vector_t<int> request){
         if(this->customers[i]->request() > work) { execute = false; break; }
         else {
           work+=this->customers[i]->get_init();
-          count++;
+          this->safe_sequence[count++] = i;
           visited[i] = true;
           flag = true;
         }
@@ -139,6 +140,8 @@ bool banker_t::is_safe(int index, EVec::extended_vector_t<int> request){
   }
   return (count < this->processes()) ? false : true;
 }
+
+bool banker_t::is_available(EVec::extended_vector_t<int> request){ return this->available_funds > request; }
 
 bool banker_t::can_grant_request(int index, EVec::extended_vector_t<int> request){
   /*
@@ -225,6 +228,8 @@ void banker_t::add_customers(std::vector<customer_t*> container) {
 
 int banker_t::resources() const { return this->_m_resources; }
 int banker_t::processes() const { return this->_n_processes; }
+
+void banker_t::clear_sequence() { this->safe_sequence.clear(); }
 
 std::vector<customer_t*> banker_t::get_customers() const{
   return this->customers;

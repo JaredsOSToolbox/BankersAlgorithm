@@ -31,5 +31,6 @@ namespace Utils {
   void conduct_all(bool);
 
   void conduct_certain_test(bool, std::string, std::vector<bool>*, int);
+  void customer_bank_test(void);
 }
 

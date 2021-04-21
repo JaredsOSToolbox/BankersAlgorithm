@@ -22,6 +22,7 @@ class banker_t {
     bool conduct_simulation(bool);
     void withdrawl_resources(customer_t*);
     void deposit(customer_t*);
+    bool is_available(EVec::extended_vector_t<int>);
 
     EVec::extended_vector_t<int> overdraft_check(EVec::extended_vector_t<int>);
 
@@ -31,6 +32,7 @@ class banker_t {
 
     int resources() const;
     int processes() const;
+    void clear_sequence();
 
     friend std::ostream& operator<<(std::ostream&, const banker_t&);
 
@@ -41,6 +43,7 @@ class banker_t {
     std::vector<customer_t*> customers;
     std::vector<bool> finished;
     int _m_resources, _n_processes;
+    EVec::extended_vector_t<int> safe_sequence;
     //EVec::extended_vector_t<bool> finished;
 };
 

@@ -3,6 +3,8 @@
 #include "../includes/reader_t.hpp"
 #include "../includes/utils.hpp"
 
+#include <stdio.h>
+
 namespace Utils {
   
   const char* AUTHOR = "Jared Dyreson";
@@ -88,6 +90,42 @@ namespace Utils {
 
     assert(all(iterations) == true);
     printf("[INFO] All %d assertions passed!\n", TEST_COUNT);
+  }
+
+  void customer_bank_test(void) {
+
+    /*
+     * Directly pulled from the example code
+    */
+
+    EVec::extended_vector_t<int> alloc({3, 1, 5});
+    EVec::extended_vector_t<int> max({5, 2, 6});
+    EVec::extended_vector_t<int> need = alloc - max;
+    EVec::extended_vector_t<int> request({3, 3, 3});
+
+    EVec::extended_vector_t<int> available_resources = alloc + max + need;
+
+    customer_t* c0 = new customer_t(alloc, request, 0);
+    customer_t* c1 = new customer_t(max, max, 1);
+    customer_t* c2 = new customer_t(alloc, (alloc + available_resources), 2);
+
+    std::vector<customer_t*> customers({c0, c1, c2});
+
+    banker_t bank = banker_t(available_resources, customers);
+
+    std::cout << "Bank: " << std::endl << bank << std::endl;
+
+    c0->generate_request();
+    auto _request = c0->request();
+
+    std::cout << "random request: ";
+    print_vector(c0->request().get_data());
+    std::cout << std::endl;
+    printf("Is this request available %s\n", (bank.is_available(_request)) ? "yes" : "no");
+
+    for (auto element : customers) {
+      free(element);
+    }
   }
 }
 

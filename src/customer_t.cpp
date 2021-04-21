@@ -7,6 +7,7 @@
 
 #include <stdio.h> // for printf
 #include <stdlib.h>  // for EXIT_SUCCESS
+#include <ctime> // std::time
 
 
 void print_vector(std::vector<int> container) {
@@ -26,7 +27,7 @@ customer_t::customer_t(EVec::extended_vector_t<int> init, EVec::extended_vector_
 //customer_t::customer_t(std::vector<int> init, std::vector<int> request, int number){
   this->initial_allocation = init;
   this->need = request;
-  this->maximum = this->get_maximum();
+  this->maximum = this->need + this->initial_allocation;
   this->number = number;
 }
 
@@ -59,7 +60,7 @@ bool customer_t::needs_met(){
 }
 
 EVec::extended_vector_t<int> customer_t::get_maximum(){
-  return this->initial_allocation + this->need;
+  return this->maximum;
   //EVec::extended_vector_t<int> maximum;
   //for(size_t i = 0; i < this->initial_allocation.size(); ++i){
     //maximum.push_back(this->initial_allocation[i] + this->request[i]);
@@ -69,14 +70,16 @@ EVec::extended_vector_t<int> customer_t::get_maximum(){
 
 void customer_t::generate_request(){
   if(!this->request_.empty()) { return; } // NOTE : we will clear this
+  std::srand(std::time(nullptr));
   EVec::extended_vector_t<int> _request;
   for(size_t i = 0; i < this->initial_allocation.size(); ++i) {
     if(this->need[i] == 0){ _request.push_back(0); continue; }
     _request.push_back(
-      (std::rand() % this->need[i]) + 1
+      1 + std::rand()/((RAND_MAX + 1u)/this->need[i])
     );
   }
   this->request_ = _request;
+  this->need-=this->request_;
 }
 
 

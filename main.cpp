@@ -24,5 +24,6 @@ int main(int argc, const char* argv[]){
     //Utils::conduct_certain_test(false, "inputs/02_bankers_small.txt", &_container, 0);
   //}
   Utils::conduct_all(false);
+  //Utils::customer_bank_test();
   return 0;
 }
