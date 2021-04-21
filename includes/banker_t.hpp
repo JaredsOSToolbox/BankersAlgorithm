@@ -14,10 +14,10 @@ class banker_t {
 
     EVec::extended_vector_t<int> get_available_funds();
 
-    void update_avaialble_funds(EVec::extended_vector_t<int>);
-
     bool can_grant_request(int, EVec::extended_vector_t<int>);
     bool is_safe(int, EVec::extended_vector_t<int>);
+
+    void update_avaialble_funds(EVec::extended_vector_t<int>);
 
     bool conduct_simulation(bool);
     void withdrawl_resources(customer_t*);
@@ -44,6 +44,5 @@ class banker_t {
     std::vector<bool> finished;
     int _m_resources, _n_processes;
     EVec::extended_vector_t<int> safe_sequence;
-    //EVec::extended_vector_t<bool> finished;
 };
 

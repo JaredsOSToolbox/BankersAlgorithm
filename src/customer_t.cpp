@@ -24,7 +24,6 @@ void print_vector(std::vector<int> container) {
 
 
 customer_t::customer_t(EVec::extended_vector_t<int> init, EVec::extended_vector_t<int> request, int number){
-//customer_t::customer_t(std::vector<int> init, std::vector<int> request, int number){
   this->initial_allocation = init;
   this->need = request;
   this->maximum = this->need + this->initial_allocation;
@@ -49,6 +48,9 @@ EVec::extended_vector_t<int> customer_t::get_init(){
 }
 
 EVec::extended_vector_t<int> customer_t::request() {
+  /*
+   * Fail safe
+  */
   if(this->request_.empty()){
     this->generate_request();
   }
@@ -61,14 +63,14 @@ bool customer_t::needs_met(){
 
 EVec::extended_vector_t<int> customer_t::get_maximum(){
   return this->maximum;
-  //EVec::extended_vector_t<int> maximum;
-  //for(size_t i = 0; i < this->initial_allocation.size(); ++i){
-    //maximum.push_back(this->initial_allocation[i] + this->request[i]);
-  //}
-  //return maximum;
 }
 
 void customer_t::generate_request(){
+  /*
+   * Adapted from this source:
+   * https://en.cppreference.com/w/cpp/numeric/random/rand
+  */
+
   if(!this->request_.empty()) { return; } // NOTE : we will clear this
   std::srand(std::time(nullptr));
   EVec::extended_vector_t<int> _request;
@@ -85,7 +87,6 @@ void customer_t::generate_request(){
 
 void customer_t::print() {
   // FIXME
-  //return;
   print_vector(this->initial_allocation.get_data());
   std::cout << "\t\t";
   print_vector(this->maximum.get_data());
@@ -103,13 +104,6 @@ void customer_t::drop_resources(){
 
 void customer_t::obtain_resources() {
   this->initial_allocation = this->maximum;
-}
-
-pthread_t* customer_t::get_pthread_id(){ return &thread_id; }
-
-
-void customer_t::set_number(int number){
-  this->number = number;
 }
 
 std::ostream& operator<<(std::ostream& os, const customer_t& customer) {

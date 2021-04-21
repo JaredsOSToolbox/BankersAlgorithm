@@ -7,7 +7,7 @@ CFLAGS = -Wall -g -lpthread -std=c++17
 ECFLAGS = -Os -fdata-sections -ffunctions-sections -Wl,-dead_strip
 OUTPUT = bankruptcy
 
-all: $(OBJS) main.cpp $(OUTPUT)
+all: $(OBJS) main.cpp
 	$(COMPILER) $(CFLAGS) main.cpp $(OBJS) -o $(OUTPUT)
 	./$(OUTPUT)
 

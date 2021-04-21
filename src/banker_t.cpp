@@ -11,6 +11,9 @@
 #include <pthread.h>
 #include <unistd.h>
 
+/*
+ * Global variables for the runner function below
+*/
 
 pthread_mutex_t mutex_;
 banker_t banker_;
@@ -87,34 +90,17 @@ banker_t::banker_t(){
   this->_m_resources = 0;
 }
 
-EVec::extended_vector_t<int> banker_t::get_available_funds(){
+EVec::extended_vector_t<int> banker_t::get_available_funds() {
   return this->available_funds;
 }
 
-// FIXME : same as constructor
-void banker_t::update_avaialble_funds(EVec::extended_vector_t<int> container) {
-  this->available_funds = container;
-}
-
-template <typename T>
-bool all(std::vector<T> container){
-  for(bool element : container){
-    if(!element){ return false; }
-  }
-  return true;
-}
-
-template <typename T>
-
-bool any_(std::vector<T> container) {
-  int i = 0;
-  for(auto element : container) {
-    if(element){ i++; }
-  }
-  return (i > 0);
-}
-
 bool banker_t::is_safe(int index, EVec::extended_vector_t<int> request){
+  /*
+   * Found and adapted from this source
+   *
+   * https://github.com/iamrohitsuthar/SPOS/blob/master/Bankers_Algorithm/BankersImplementation.java
+  */
+
   int count = 0;
   bool execute = true;
 
@@ -127,7 +113,7 @@ bool banker_t::is_safe(int index, EVec::extended_vector_t<int> request){
     for(i = 0; i < this->processes(); ++i) { // look at all the processes available
       execute = true;
       if(!visited[i]) {
-        if(this->customers[i]->request() > work) { execute = false; break; }
+        if(this->customers[i]->request() > work) { execute = false; break; } // if the request exceeds the funds allocated temporarily
         else {
           work+=this->customers[i]->get_init();
           this->safe_sequence[count++] = i;
@@ -138,7 +124,10 @@ bool banker_t::is_safe(int index, EVec::extended_vector_t<int> request){
     }
     if(!flag){ break; }
   }
-  return (count < this->processes()) ? false : true;
+  return (count < this->processes())
+             ? false
+             : true;  // if we didn't go through all the possible processes
+                      // (because one has failed), therefore we are not eligible
 }
 
 bool banker_t::is_available(EVec::extended_vector_t<int> request){ return this->available_funds > request; }
@@ -159,7 +148,6 @@ void banker_t::withdrawl_resources(customer_t* customer) {
    * Give resources to the customer
   */
 
-  //this->available_funds-=customer->request();
   try{ 
     this->available_funds = this->overdraft_check(customer->request());
     customer->obtain_resources();
@@ -180,6 +168,10 @@ void banker_t::deposit(customer_t* customer) {
 }
 
 EVec::extended_vector_t<int> banker_t::overdraft_check(EVec::extended_vector_t<int> request) {
+  /*
+   * Ensure there is no overdrafting from the resource pool
+  */
+
   EVec::extended_vector_t<int> resultant(request.size(), 0);
   for(size_t i = 0; i < request.size(); ++i) {
     int _r = this->available_funds[i] - request[i];
@@ -202,6 +194,11 @@ bool banker_t::conduct_simulation(bool pedantic) {
   pthread_mutexattr_init(&mutex_attr);
   pthread_mutex_init(&mutex_, &mutex_attr);
   
+  // Update the global banker_t object
+  // We need these to be available to the runner function
+  // I could have passed a structure pointer to the runner function with all
+  // the necessary objects but that ended in a big ball of fire
+
   banker_.finished = std::vector<bool>(this->customers.size(), false);
   banker_ = *this;
 
@@ -221,6 +218,9 @@ bool banker_t::conduct_simulation(bool pedantic) {
   return STATUS;
 }
 
+void banker_t::update_avaialble_funds(EVec::extended_vector_t<int> container) {
+  this->available_funds = container;
+}
 
 void banker_t::add_customers(std::vector<customer_t*> container) {
   this->customers = container;
@@ -237,7 +237,13 @@ std::vector<customer_t*> banker_t::get_customers() const{
 
 std::ostream& operator<<(std::ostream& os, const banker_t& banker){
   os << "Available: ";
-  // FIXME
+  /*
+   * FIXME | well this is a fundamental problem that can't be fixed easily
+   * the << operator freaks out when I try to define the function as a template
+   * Unsure why this is the case but since this project is due soon and I am very tired
+   * please settle for this function that just prints out the std::vector that controls this function
+  */
+
   print_vector(banker.available_funds.get_data());
   os << std::endl;
 

@@ -73,7 +73,6 @@ std::vector<EVec::extended_vector_t<int>> reader_t::process_line(std::string lin
 }
 
 
-//std::vector<std::string> reader_t::read_contents(std::vector<customer_t*>* clientel, banker_t* banker) {
 std::vector<std::string> reader_t::read_contents(banker_t* banker) {
   std::vector<EVec::extended_vector_t<int>> requests;
   std::vector<customer_t*> clientel;
@@ -105,7 +104,6 @@ std::vector<std::string> reader_t::read_contents(banker_t* banker) {
       // CREATE CUSTOMER
       customer_t* customer = new customer_t(processed[0], processed[1], i);
       clientel.push_back(customer);
-      //clientel->emplace_back(&customer_t(processed[0], processed[1], i)); // FIXME : unsure if this will cause memory issues
     }
 
     contents.push_back(line); // save a copy, this was from my compiler codebase
