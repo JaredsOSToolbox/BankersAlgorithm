@@ -14,16 +14,14 @@
 #include "includes/reader_t.hpp"
 #include "includes/utils.hpp"
 
-#define MAX_TEST_ITERATIONS 10
 
-
-
-int main(int argc, const char* argv[]){
-  //std::vector<bool> _container(1, false);
-  //for(int i = 0; i < MAX_TEST_ITERATIONS; ++i) {
-    //Utils::conduct_certain_test(false, "inputs/02_bankers_small.txt", &_container, 0);
-  //}
-  Utils::conduct_all(false);
-  //Utils::customer_bank_test();
+int main(int argc, const char* argv[]) {
+  if(argc < 2) {
+    std::cout << "Conducting all tests by default" << std::endl;
+    Utils::conduct_all(false);
+  } else {
+    std::vector<bool> s(4); // an artifact from conduct_all_tests
+    Utils::conduct_certain_test(false, std::string(argv[1]), &s, 0);
+  }
   return 0;
 }
